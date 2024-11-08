@@ -136,7 +136,7 @@ Ensure your tests cover the relevant aspects of the architectural characteristic
 1. Treat fitness function tests as first-class citizens in your codebase. Version control them, review them regularly, and refactor them as needed to ensure they remain effective and maintainable.
 
 
-# Examples of Automating Specific Fitness Functions:
+# Best Practices for Building Automated Fitness Functions:
 
 ## Enforcing Layering Rules: 
 To prevent unauthorized access between architectural layers, write a test using ArchUnit that analyzes code dependencies and fails if a class in the presentation layer directly accesses the database layer.
@@ -148,7 +148,8 @@ Implement a test that checks every service endpoint for proper handling of all R
 Set up a monitoring tool like Prometheus to continuously track response times for critical transactions. Configure alerts to notify the team if response times exceed predefined thresholds, enabling prompt investigation and remediation.
 
 
-Checking for Stale Data: Write a triggered fitness function that queries the database for data freshness and fails if data exceeds the defined staleness limit. This ensures data integrity, especially in systems that rely heavily on caching.
+## Checking for Stale Data: 
+Write a triggered fitness function that queries the database for data freshness and fails if data exceeds the defined staleness limit. This ensures data integrity, especially in systems that rely heavily on caching.
 
 
 # Key Benefits of Automating Fitness Functions:
