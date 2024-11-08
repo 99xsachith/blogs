@@ -1,4 +1,4 @@
-# Introduction
+# Introduction to Architecture Fitness Functions
 
 Preserving architectural functions over the lifetime of a product can be a challenge when the product goes through rapid business and technological changes. To cater to this requirement, among the architectural governance techniques, we find architectural fitness functions coming in to play ata evolutionary computing strategy.
 
@@ -133,3 +133,9 @@ Overall, architectural fitness functions are an essential tool in building and m
 1. Integrate fitness functions into your development process. This ensures that they are regularly checked and enforced, preventing architectural drift.
 
 Use a combination of automated and manual checks. While automation is ideal, some characteristics might require manual inspection.
+
+# Designing an Automated Fitness Functions Auditor (AFFA)
+
+[Refer the article here](./AutomatedFitnessFunctionsAuditor.md)
+
+Please check the [99x ProductCentral](https://productcentral.io) for a fitting AFFA reference architecture template for your product.
