@@ -1,0 +1,1850 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AI Impact Compass</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%F0%9F%A7%AD%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;1,400;1,500&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    --paper: #170F22;
+    --paper-raised: #221733;
+    --ink: #FFFFFF;
+    --ink-soft: #C9B6E8;
+    --ink-faint: #9683B5;
+    --line: #382A4E;
+    --line-strong: #4C3A68;
+    --accent: #C9A6F2;
+    --accent-soft: #2C2144;
+    --good: #8FD9A8;
+    --good-strong: #ACE8C1;
+    --good-tint: #1D2B24;
+    --good-line: #345040;
+    --bad: #F0A578;
+    --bad-strong: #F5BF9C;
+    --bad-tint: #2F2018;
+    --bad-line: #4D3527;
+    --shadow: 0 1px 2px rgba(0,0,0,0.45), 0 12px 30px rgba(0,0,0,0.4);
+    --font-display: "Newsreader", Georgia, "Times New Roman", serif;
+    --font-body: "Work Sans", -apple-system, "Segoe UI", sans-serif;
+    --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-body);
+    font-size: 16px;
+    line-height: 1.55;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  a { color: var(--accent); text-decoration-color: var(--line-strong); text-underline-offset: 3px; }
+  a:hover { text-decoration-color: var(--accent); }
+  a:focus-visible, button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  .page {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: clamp(28px, 5vw, 64px) clamp(18px, 4vw, 40px) 56px;
+  }
+
+  /* ---------- Header ---------- */
+
+  .eyebrow {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.09em;
+    text-transform: uppercase;
+    color: var(--accent);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 18px;
+  }
+  .eyebrow::before {
+    content: "";
+    width: 26px;
+    height: 1px;
+    background: var(--accent);
+    display: inline-block;
+  }
+
+  h1 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(32px, 4.6vw, 50px);
+    line-height: 1.08;
+    letter-spacing: -0.01em;
+    margin: 0 0 18px;
+    text-wrap: balance;
+  }
+  h1 em { font-style: italic; color: var(--accent); }
+
+  .dek {
+    font-size: clamp(16px, 1.9vw, 18.5px);
+    color: var(--ink-soft);
+    max-width: 62ch;
+    margin: 0 0 8px;
+  }
+
+  .dek strong { color: var(--ink); font-weight: 600; }
+
+  header.hero { margin-bottom: clamp(36px, 6vw, 56px); }
+
+  /* ---------- Section headings ---------- */
+
+  .section-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    margin: clamp(46px, 7vw, 68px) 0 22px;
+    border-bottom: 1px solid var(--line);
+    padding-bottom: 14px;
+  }
+  .section-head h2 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(22px, 2.6vw, 27px);
+    margin: 0;
+    text-wrap: balance;
+  }
+  .section-head .tag {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    white-space: nowrap;
+  }
+
+  .section-note {
+    color: var(--ink-soft);
+    max-width: 68ch;
+    margin: -6px 0 26px;
+    font-size: 15px;
+  }
+
+  /* ---------- Quadrant ---------- */
+
+  .compass {
+    display: grid;
+    grid-template-columns: 40px 1fr 1fr;
+    grid-template-rows: 34px 1fr 1fr;
+  }
+
+  .axis-col {
+    grid-row: 1;
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    padding-bottom: 8px;
+  }
+  .axis-col.good { grid-column: 2; color: var(--good); }
+  .axis-col.bad { grid-column: 3; color: var(--bad); }
+
+  .axis-row {
+    grid-column: 1;
+    writing-mode: vertical-rl;
+    transform: rotate(180deg);
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .axis-row.up { grid-row: 2; }
+  .axis-row.down { grid-row: 3; }
+
+  .quad {
+    border: 1px solid var(--line);
+    padding: 20px 20px 8px;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+  }
+  .quad.up-good   { grid-column: 2; grid-row: 2; background: var(--good-tint); border-color: var(--good-line); border-right-width: 0; border-bottom-width: 0; }
+  .quad.up-bad    { grid-column: 3; grid-row: 2; background: var(--bad-tint);  border-color: var(--bad-line);  border-bottom-width: 0; }
+  .quad.down-good { grid-column: 2; grid-row: 3; background: var(--good-tint); border-color: var(--good-line); border-right-width: 0; }
+  .quad.down-bad  { grid-column: 3; grid-row: 3; background: var(--bad-tint);  border-color: var(--bad-line); }
+
+  .quad-kicker {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .up-good .quad-kicker, .down-good .quad-kicker { color: var(--good-strong); }
+  .up-bad .quad-kicker, .down-bad .quad-kicker { color: var(--bad-strong); }
+  .quad-kicker .arrow { font-size: 13px; }
+
+  .item {
+    padding: 12px 0;
+    border-top: 1px solid rgba(255,255,255,0.07);
+  }
+  .item:first-of-type { border-top: none; padding-top: 0; }
+
+  .item-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 10px;
+    margin-bottom: 3px;
+  }
+  .item-label {
+    font-weight: 600;
+    font-size: 14.5px;
+    letter-spacing: -0.005em;
+  }
+  .item-tag {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.03em;
+    color: var(--ink-faint);
+    white-space: nowrap;
+    flex-shrink: 0;
+    font-variant-numeric: tabular-nums;
+  }
+  .item-gloss {
+    font-size: 13.5px;
+    color: var(--ink-soft);
+    line-height: 1.45;
+  }
+
+  @media (max-width: 720px) {
+    .compass {
+      grid-template-columns: 1fr;
+      grid-template-rows: none;
+      gap: 14px;
+    }
+    .axis-col, .axis-row { display: none; }
+    .quad, .quad.up-good, .quad.up-bad, .quad.down-good, .quad.down-bad {
+      grid-column: 1;
+      grid-row: auto;
+      border-width: 1px;
+      border-radius: 3px;
+    }
+  }
+
+  /* ---------- Lens switcher ---------- */
+
+  .lens-bar {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-bottom: 30px;
+  }
+  .lens-radio {
+    position: absolute;
+    width: 1px; height: 1px;
+    padding: 0; margin: -1px;
+    overflow: hidden;
+    clip: rect(0,0,0,0);
+    white-space: nowrap;
+    border: 0;
+  }
+  .lens-tab {
+    font-family: var(--font-mono);
+    font-size: 12.5px;
+    letter-spacing: 0.03em;
+    padding: 9px 16px;
+    border: 1px solid var(--line-strong);
+    border-radius: 999px;
+    color: var(--ink-soft);
+    cursor: pointer;
+    background: var(--paper-raised);
+    transition: background-color .15s ease, color .15s ease, border-color .15s ease;
+    user-select: none;
+  }
+  .lens-radio:checked + .lens-tab {
+    background: var(--accent);
+    border-color: var(--accent);
+    color: var(--paper);
+  }
+  .lens-radio:focus-visible + .lens-tab {
+    outline: 2px solid var(--accent);
+    outline-offset: 2px;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .lens-tab { transition: none; }
+  }
+
+  .panel { display: none; }
+  .lens-bar:has(#lens-overview:checked) ~ #panel-overview,
+  .lens-bar:has(#lens-maker:checked) ~ #panel-maker,
+  .lens-bar:has(#lens-provider:checked) ~ #panel-provider,
+  .lens-bar:has(#lens-investor:checked) ~ #panel-investor,
+  .lens-bar:has(#lens-board:checked) ~ #panel-board,
+  .lens-bar:has(#lens-cto:checked) ~ #panel-cto,
+  .lens-bar:has(#lens-ciso:checked) ~ #panel-ciso,
+  .lens-bar:has(#lens-ceo:checked) ~ #panel-ceo {
+    display: block;
+  }
+
+  .panel-intro {
+    color: var(--ink-soft);
+    max-width: 68ch;
+    margin: 0 0 22px;
+    font-size: 14.5px;
+  }
+  .panel-intro strong { color: var(--ink); font-weight: 600; }
+
+  /* ---------- Business parameters ---------- */
+
+  .params-head {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin: 36px 0 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .params-head::after {
+    content: "";
+    height: 1px;
+    flex: 1;
+    background: var(--line);
+  }
+
+  .params-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 16px;
+  }
+  @media (max-width: 760px) { .params-grid { grid-template-columns: 1fr; } }
+
+  .param-card {
+    background: var(--paper-raised);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 18px 20px 20px;
+  }
+  .param-card h4 {
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 13px;
+    margin: 0 0 12px;
+    color: var(--accent);
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  .param-card ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .param-card li {
+    font-size: 13.5px;
+    color: var(--ink-soft);
+    padding-left: 13px;
+    position: relative;
+    margin-bottom: 9px;
+    line-height: 1.48;
+  }
+  .param-card li:last-child { margin-bottom: 0; }
+  .param-card li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 7px;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: var(--ink-faint);
+  }
+  .param-card li strong { color: var(--ink); font-weight: 600; }
+
+  /* ---------- Horizon section ---------- */
+
+  .horizon-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+  @media (max-width: 640px) { .horizon-grid { grid-template-columns: 1fr; } }
+
+  .horizon-card {
+    background: var(--paper-raised);
+    border: 1px solid var(--line);
+    border-radius: 4px;
+    padding: 22px 24px 24px;
+    box-shadow: var(--shadow);
+  }
+  .horizon-card h3 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-style: italic;
+    font-size: 19px;
+    margin: 0 0 4px;
+  }
+  .horizon-card .horizon-span {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--ink-faint);
+    letter-spacing: 0.03em;
+    display: block;
+    margin-bottom: 16px;
+  }
+  .horizon-block { margin-bottom: 16px; }
+  .horizon-block:last-child { margin-bottom: 0; }
+  .horizon-block-label {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .horizon-block.benefit .horizon-block-label { color: var(--good-strong); }
+  .horizon-block.challenge .horizon-block-label { color: var(--bad-strong); }
+  .horizon-block ul {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .horizon-block li {
+    font-size: 14px;
+    color: var(--ink-soft);
+    padding-left: 14px;
+    position: relative;
+    margin-bottom: 7px;
+    line-height: 1.5;
+  }
+  .horizon-block li:last-child { margin-bottom: 0; }
+  .horizon-block li::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 8px;
+    width: 5px;
+    height: 5px;
+    border-radius: 50%;
+  }
+  .horizon-block.benefit li::before { background: var(--good); }
+  .horizon-block.challenge li::before { background: var(--bad); }
+  .horizon-block li strong { color: var(--ink); font-weight: 600; }
+
+  /* ---------- Operating-model shift ---------- */
+
+  .horizon-block.neutral-a .horizon-block-label { color: var(--accent); }
+  .horizon-block.neutral-a li::before { background: var(--accent); }
+  .horizon-block.neutral-b .horizon-block-label { color: var(--ink-soft); }
+  .horizon-block.neutral-b li::before { background: var(--ink-faint); }
+
+  .params-grid.cols-4 { grid-template-columns: repeat(4, 1fr); }
+  @media (max-width: 900px) { .params-grid.cols-4 { grid-template-columns: repeat(2, 1fr); } }
+  @media (max-width: 560px) { .params-grid.cols-4 { grid-template-columns: 1fr; } }
+
+  .subsection-head {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin: 38px 0 14px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .subsection-head:first-of-type { margin-top: 4px; }
+  .subsection-head::after {
+    content: "";
+    height: 1px;
+    flex: 1;
+    background: var(--line);
+  }
+
+  .pullquote {
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: clamp(18px, 2.3vw, 21px);
+    line-height: 1.5;
+    color: var(--ink);
+    border-left: 2px solid var(--accent);
+    padding: 4px 0 4px 22px;
+    margin: 40px 0 0;
+    max-width: 68ch;
+  }
+
+  /* ---------- Discussion script ---------- */
+
+  .script {
+    counter-reset: step;
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+    border-top: 1px solid var(--line);
+  }
+  .script-step {
+    counter-increment: step;
+    display: grid;
+    grid-template-columns: 44px 1fr;
+    gap: 18px;
+    padding: 18px 0;
+    border-bottom: 1px solid var(--line);
+  }
+  .script-step::before {
+    content: counter(step, decimal-leading-zero);
+    font-family: var(--font-mono);
+    font-size: 13px;
+    color: var(--accent);
+    padding-top: 2px;
+  }
+  .script-step h4 {
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: 15.5px;
+    margin: 0 0 5px;
+  }
+  .script-step p {
+    margin: 0;
+    font-size: 14.5px;
+    color: var(--ink-soft);
+  }
+  .script-step p.ask {
+    font-family: var(--font-display);
+    font-style: italic;
+    color: var(--ink);
+    font-size: 15.5px;
+    margin-top: 6px;
+  }
+
+  /* ---------- Footer / sources ---------- */
+
+  footer {
+    margin-top: clamp(50px, 7vw, 72px);
+    padding-top: 22px;
+    border-top: 1px solid var(--line);
+  }
+  footer p.note {
+    font-size: 13px;
+    color: var(--ink-faint);
+    max-width: 68ch;
+    margin: 0 0 18px;
+  }
+  .sources {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+    gap: 6px 24px;
+    font-family: var(--font-mono);
+    font-size: 12px;
+  }
+  .sources a { color: var(--ink-soft); }
+  .sources a:hover { color: var(--accent); }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="hero">
+    <div class="eyebrow">A discussion framework for product makers, IP owners &amp; service providers</div>
+    <h1>What's rising, what's falling &mdash; and which of it is <em>good</em></h1>
+    <p class="dek">Generative AI is moving a lot of numbers at once inside a software business: delivery speed, code quality, gross margin, valuation, hiring. <strong>Up isn't automatically good, and down isn't automatically bad</strong> &mdash; the two questions are independent, which is exactly what this compass is built to keep separate in a live conversation. <strong>Switch the tab below</strong> to read the same forces from the seat of the industry at large, the company that owns the IP, or the firm that delivers services to it &mdash; the same sixteen or so numbers turn into a different set of decisions depending on which chair you're in.</p>
+  </header>
+
+  <section id="compass">
+    <div class="section-head">
+      <h2>The compass</h2>
+      <span class="tag">Direction × Verdict</span>
+    </div>
+    <p class="section-note">Read it as two questions asked of any metric: is it moving <strong style="color:var(--ink)">up or down</strong>, and is that movement <strong style="color:var(--good-strong)">good</strong> or <strong style="color:var(--bad-strong)">bad</strong>. Each item is tagged <span style="font-family:var(--font-mono)">ST</span> for a mostly short-horizon effect, <span style="font-family:var(--font-mono)">LT</span> for something structural. Three lenses below read the same underlying forces from three different seats at the table.</p>
+
+    <div class="lens-bar">
+      <input type="radio" name="lens" id="lens-overview" class="lens-radio" checked>
+      <label for="lens-overview" class="lens-tab">Industry overview</label>
+      <input type="radio" name="lens" id="lens-maker" class="lens-radio">
+      <label for="lens-maker" class="lens-tab">Software maker &middot; IP owner</label>
+      <input type="radio" name="lens" id="lens-provider" class="lens-radio">
+      <label for="lens-provider" class="lens-tab">Service provider</label>
+      <input type="radio" name="lens" id="lens-investor" class="lens-radio">
+      <label for="lens-investor" class="lens-tab">Investor &middot; VC &amp; PE</label>
+      <input type="radio" name="lens" id="lens-board" class="lens-radio">
+      <label for="lens-board" class="lens-tab">Board &middot; valuation &amp; governance</label>
+      <input type="radio" name="lens" id="lens-cto" class="lens-radio">
+      <label for="lens-cto" class="lens-tab">CTO &middot; architecture</label>
+      <input type="radio" name="lens" id="lens-ciso" class="lens-radio">
+      <label for="lens-ciso" class="lens-tab">CISO &middot; security</label>
+      <input type="radio" name="lens" id="lens-ceo" class="lens-radio">
+      <label for="lens-ceo" class="lens-tab">CEO &middot; management</label>
+    </div>
+
+    <div class="panel" id="panel-overview">
+      <p class="panel-intro">What's true across software broadly, before splitting by who's sitting in the room.</p>
+
+      <div class="compass">
+        <div class="axis-col good">Good</div>
+        <div class="axis-col bad">Bad</div>
+        <div class="axis-row up">Up</div>
+        <div class="axis-row down">Down</div>
+
+        <div class="quad up-good">
+          <div class="quad-kicker"><span class="arrow">&#9650;</span> Rising &middot; favorable</div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Delivery throughput</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">2025 is the first year AI adoption correlates positively with delivery throughput and product performance &mdash; it was flat or negative the year before.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Daily AI adoption</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">90% of practitioners now use AI at work; the tooling has gone from novelty to default in under two years.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Revenue per builder</span><span class="item-tag">LT</span></div>
+            <div class="item-gloss">AI-native teams are posting $2M&ndash;$7M revenue per employee, against a traditional SaaS median near $130K.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Who can ship software</span><span class="item-tag">LT</span></div>
+            <div class="item-gloss">Domain experts and non-engineers now take a working product from idea to production without a traditional build team.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Usage-based pricing</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">Adoption of usage- and outcome-based pricing is up ~67% year over year, letting vendors capture upside instead of just absorbing AI cost.</div>
+          </div>
+        </div>
+
+        <div class="quad up-bad">
+          <div class="quad-kicker"><span class="arrow">&#9650;</span> Rising &middot; unfavorable</div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Duplication &amp; churn</span><span class="item-tag">LT</span></div>
+            <div class="item-gloss">Copy-pasted code is up nearly 4x since 2021; code churned within two weeks of being written rose from 5.5% to 7.9%.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">AI cost of goods sold</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">AI-heavy features run near 52% gross margin against 80&ndash;90% for legacy SaaS &mdash; inference is a real, growing marginal cost.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Valuation volatility</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">Public SaaS multiples have swung from 15&ndash;20x to 5&ndash;10x revenue, and single assets have re-priced by billions within a single week.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Confidence-reality gap</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">In a controlled trial, developers using AI took 19% longer on real tasks &mdash; then still reported feeling roughly 20% faster.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">AI code shipped despite distrust</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">Roughly 30% of practitioners still report low trust in AI-generated code, yet the volume of AI-authored code shipped keeps climbing regardless &mdash; verification isn't keeping pace with volume.</div>
+          </div>
+        </div>
+
+        <div class="quad down-good">
+          <div class="quad-kicker"><span class="arrow">&#9660;</span> Falling &middot; favorable</div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Time to first version</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">A well-scoped idea reaches a testable build in days, where it used to take a sprint or two.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Cost of an experiment</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">Spinning up a prototype, a pricing test, or an A/B variant is close to a rounding error on the budget.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Per-seat AI tool pricing</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">List prices for AI coding assistants fell roughly 23% year over year as the category matured and segmented.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Capital to real revenue</span><span class="item-tag">LT</span></div>
+            <div class="item-gloss">Teams of a few dozen people are reaching $100M ARR &mdash; the headcount and cash once required for that outcome keep dropping.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Barrier to entry</span><span class="item-tag">LT</span></div>
+            <div class="item-gloss">The technical threshold to found a software company has fallen furthest for people who deeply understand a problem but never learned to code.</div>
+          </div>
+        </div>
+
+        <div class="quad down-bad">
+          <div class="quad-kicker"><span class="arrow">&#9660;</span> Falling &middot; unfavorable</div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Entry-level hiring</span><span class="item-tag">LT</span></div>
+            <div class="item-gloss">33 straight months of decline in employment for 22&ndash;25 year-old developers; entry postings down roughly 25% in a single year.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Refactoring discipline</span><span class="item-tag">LT</span></div>
+            <div class="item-gloss">The share of code changes that are genuine refactors fell from 25% to under 10% between 2021 and 2024.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Delivery stability</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">AI adoption still correlates negatively with deployment stability industry-wide &mdash; speed is arriving before the safety nets are ready.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Premium for thin AI</span><span class="item-tag">LT</span></div>
+            <div class="item-gloss">A chatbot bolted onto an existing product no longer earns a valuation premium in diligence &mdash; it increasingly earns a discount.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Time to reach parity</span><span class="item-tag">LT</span></div>
+            <div class="item-gloss">What used to take a well-funded competitor a year to copy, agentic tooling now gets close to in weeks &mdash; the build-moat that used to protect a lead is thinner than it was.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="params-head">Business parameters &middot; industry-wide</div>
+      <div class="params-grid">
+        <div class="param-card">
+          <h4>Budget justification</h4>
+          <ul>
+            <li>Fund AI narrowly and instrumented, not broadly and aspirational &mdash; 95% of enterprise pilots return no measured ROI; the 5% that work are narrow, well-integrated deployments</li>
+            <li>Separate AI cost of goods (inference/compute) from R&amp;D headcount in the budget &mdash; they behave differently and get cut differently under pressure</li>
+            <li>Require a named before/after baseline before any pilot graduates past a quarter</li>
+          </ul>
+        </div>
+        <div class="param-card">
+          <h4>Jobs &amp; workforce</h4>
+          <ul>
+            <li>Track entry-level hiring as its own line, not folded into general engineering headcount &mdash; it's the number moving fastest and furthest</li>
+            <li>Validate any AI-driven headcount plan against measured productivity, not survey sentiment</li>
+            <li>Decide deliberately whether you're keeping a junior pipeline &mdash; don't let it shrink by default</li>
+          </ul>
+        </div>
+        <div class="param-card">
+          <h4>Revenue &amp; profitability</h4>
+          <ul>
+            <li>Watch blended gross margin as AI features enter the mix &mdash; 52% for AI-heavy work versus 80&ndash;90% legacy SaaS is a real gap, not a rounding error</li>
+            <li>Track valuation and comps quarterly, not annually &mdash; multiples have re-priced by billions within a single news cycle</li>
+            <li>Report durability (data, workflow depth, retention) alongside feature velocity, not instead of it</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" id="panel-maker">
+      <p class="panel-intro">The seat of the company that <strong>owns the IP</strong> &mdash; the product, the codebase, the roadmap, the cap table. Every item below reads from inside your own P&amp;L.</p>
+
+      <div class="compass">
+        <div class="axis-col good">Good</div>
+        <div class="axis-col bad">Bad</div>
+        <div class="axis-row up">Up</div>
+        <div class="axis-row down">Down</div>
+
+        <div class="quad up-good">
+          <div class="quad-kicker"><span class="arrow">&#9650;</span> Rising &middot; favorable</div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Delivery throughput</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">2025 is the first year AI adoption correlates positively with your own team's delivery throughput and product performance.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Revenue per engineer</span><span class="item-tag">LT</span></div>
+            <div class="item-gloss">AI-native product teams post $2M&ndash;$7M revenue per employee against a ~$130K SaaS median &mdash; the benchmark your own org economics get measured against, fairly or not.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Monetization of your IP</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">68% of AI-monetizing SaaS companies now blend usage or outcome pricing with subscription, capturing more value per unit of your own product shipped.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Feature velocity into paid tiers</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">Faster shipping means faster monetization of net-new IP, if the demand underneath it is real.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">AI adoption inside your build org</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">90% of practitioners now use AI daily &mdash; it's default infrastructure inside your own team, not an experiment.</div>
+          </div>
+        </div>
+
+        <div class="quad up-bad">
+          <div class="quad-kicker"><span class="arrow">&#9650;</span> Rising &middot; unfavorable</div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">AI's share of your COGS</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">AI-heavy features run near 52% gross margin versus 80&ndash;90% for legacy SaaS &mdash; every AI feature you ship now carries a live compute bill against your own margin.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Technical debt in your codebase</span><span class="item-tag">LT</span></div>
+            <div class="item-gloss">Duplication near 4x since 2021, churn up from 5.5% to 7.9% &mdash; this debt sits on your own balance sheet of maintainability, not a vendor's.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Volatility on your cap table</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">The same repricing that moved the BVP Cloud Index from 15&ndash;20x to 5&ndash;10x applies directly to your next round or exit.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Confidence-reality gap in-team</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">19% slower on measured tasks, ~20% felt faster &mdash; a direct risk to how accurately your own roadmap gets planned.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Your AI features outpacing trust</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">Roughly 30% of buyers and practitioners still report low trust in AI-generated output, yet your release pace for AI features keeps climbing regardless of that gap.</div>
+          </div>
+        </div>
+
+        <div class="quad down-good">
+          <div class="quad-kicker"><span class="arrow">&#9660;</span> Falling &middot; favorable</div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Cost to build &amp; test features</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">Prototyping and experimentation on your own roadmap is collapsing toward a rounding error.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Time-to-market on your roadmap</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">A well-scoped item on your backlog reaches a testable build in days.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Cost of tooling your build team</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">Per-seat AI coding tool pricing is down roughly 23% year over year.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Capital to reach meaningful ARR</span><span class="item-tag">LT</span></div>
+            <div class="item-gloss">Teams of a few dozen people are reaching $100M ARR on their own product &mdash; less capital is required to prove out IP than it used to be.</div>
+          </div>
+        </div>
+
+        <div class="quad down-bad">
+          <div class="quad-kicker"><span class="arrow">&#9660;</span> Falling &middot; unfavorable</div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Your entry-level pipeline</span><span class="item-tag">LT</span></div>
+            <div class="item-gloss">The same 33-month decline in employment for 22&ndash;25 year-old developers applies directly to who you can hire into your own org.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Refactoring discipline</span><span class="item-tag">LT</span></div>
+            <div class="item-gloss">Genuine refactors fell from 25% to under 10% of changes industry-wide &mdash; assume the same drift inside your own repos unless you're actively measuring it.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Deployment stability</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">AI adoption still correlates negatively with delivery stability industry-wide.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Premium for feature-parity adds</span><span class="item-tag">LT</span></div>
+            <div class="item-gloss">A chatbot or scoring model bolted onto your existing product increasingly earns a diligence discount, not a premium.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Time for a rival to clone you</span><span class="item-tag">LT</span></div>
+            <div class="item-gloss">What took a year to copy now takes weeks with agentic tooling &mdash; your own IP's exclusivity window is shrinking.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="params-head">Business parameters &middot; software maker</div>
+      <div class="params-grid">
+        <div class="param-card">
+          <h4>Budget justification</h4>
+          <ul>
+            <li>Size AI infra spend against a named, measured baseline &mdash; the 5% of pilots showing real ROI report $2M&ndash;$10M in annual savings from narrow, well-integrated deployments, not broad rollouts</li>
+            <li>Track AI cost of goods sold as its own line against a blended gross margin floor, not folded into general R&amp;D</li>
+            <li>Default to vendor-built, workflow-integrated tools over internal builds where you can &mdash; they succeed roughly twice as often in the data</li>
+          </ul>
+        </div>
+        <div class="param-card">
+          <h4>Jobs &amp; workforce</h4>
+          <ul>
+            <li>Keep a deliberate junior-hiring floor even as senior output rises &mdash; this quarter's saving is next decade's senior-bench gap</li>
+            <li>Put code churn and refactor share on the same dashboard as velocity, so quality debt can't hide behind a good throughput number</li>
+            <li>Re-validate any headcount reallocation against measured task time, not &ldquo;we feel faster&rdquo;</li>
+          </ul>
+        </div>
+        <div class="param-card">
+          <h4>Revenue &amp; profitability</h4>
+          <ul>
+            <li>Set a blended gross margin floor that prices in AI COGS explicitly before packaging a new AI feature</li>
+            <li>Report a &ldquo;moat score&rdquo; next to revenue &mdash; proprietary data, workflow depth, retention lift &mdash; the factors that actually earn an AI premium in diligence</li>
+            <li>Treat your valuation multiple as a quarterly variable to revisit, not an annual-planning constant</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" id="panel-provider">
+      <p class="panel-intro">The seat of the firm that <strong>delivers software for others</strong> &mdash; agencies, system integrators, outsourcers, consultancies. Your revenue has historically scaled with headcount; AI is the first force in decades to break that link.</p>
+
+      <div class="compass">
+        <div class="axis-col good">Good</div>
+        <div class="axis-col bad">Bad</div>
+        <div class="axis-row up">Up</div>
+        <div class="axis-row down">Down</div>
+
+        <div class="quad up-good">
+          <div class="quad-kicker"><span class="arrow">&#9650;</span> Rising &middot; favorable</div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Fixed-price / outcome revenue</span><span class="item-tag">LT</span></div>
+            <div class="item-gloss">Cognizant's fixed-price mix rose from 43% to 47% of revenue (2022&ndash;2024); Infosys reached 54% by early 2025 &mdash; and fixed-price work reportedly runs about 8 points higher operating margin than time-and-materials.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">AI-specialist bench &amp; rates</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">Accenture has nearly doubled its AI and data specialist headcount to 77,000 since 2023, training 550,000+ staff in generative AI &mdash; capacity that bills at $175&ndash;$350/hr, a 30&ndash;50% premium over baseline.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Recurring managed-services revenue</span><span class="item-tag">LT</span></div>
+            <div class="item-gloss">Firms are building a third engine &mdash; recurring revenue from managed AI operations &mdash; alongside project fees, precisely because it doesn't require growing headcount to grow.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Revenue outpacing headcount</span><span class="item-tag">LT</span></div>
+            <div class="item-gloss">Indian IT sector revenue grew 6.1% in FY26 against 2.3% headcount growth &mdash; the decoupling that signals a genuinely healthier business, if you're capturing it as margin.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">AI-agent capacity to orchestrate</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">AI agents' share of completed freelance tasks rose from 2.5% to 16.1% in nine months &mdash; capacity a provider can package and manage rather than staff.</div>
+          </div>
+        </div>
+
+        <div class="quad up-bad">
+          <div class="quad-kicker"><span class="arrow">&#9650;</span> Rising &middot; unfavorable</div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Client expectation of "AI speed"</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">Clients increasingly expect AI-era delivery speed at pre-AI-era prices, compressing realized rate even where card rates hold.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Liability on AI deliverables</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">More AI-generated code shipped to clients raises the defect and rework risk a provider is contractually on the hook for.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Restructuring charges, sector-wide</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">Accenture's $865M charge, alongside TCS's and Wipro's headcount cuts, shows this becoming a recurring line across the sector rather than a one-off &mdash; a real, near-term hit to profitability ahead of any payback.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Client in-house AI capability</span><span class="item-tag">LT</span></div>
+            <div class="item-gloss">As AI lowers the barrier for clients to build in-house, "why outsource at all" gets asked more often &mdash; raising churn risk on staff-augmentation contracts.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Bench risk mid-transition</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">Cutting junior hiring before the AI-supervision delivery model is fully built out risks a utilization gap in the middle of the change.</div>
+          </div>
+        </div>
+
+        <div class="quad down-good">
+          <div class="quad-kicker"><span class="arrow">&#9660;</span> Falling &middot; favorable</div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Cost per unit delivered</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">AI-augmented delivery lowers cost per feature or story point, improving competitiveness on fixed-price bids.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Time-to-delivery, fixed-price</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">Faster delivery under a fixed fee converts directly to margin, not just client benefit.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Entry-level compensation growth</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">Starting pay at McKinsey, BCG, and Bain has been frozen for three straight years; Big Four pay hasn't moved since 2022 &mdash; real near-term cost control, with a price attached elsewhere on this board.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Non-billable overhead / engagement</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">AI-assisted estimation, proposals, and PM overhead are falling, freeing billable capacity without adding headcount.</div>
+          </div>
+        </div>
+
+        <div class="quad down-bad">
+          <div class="quad-kicker"><span class="arrow">&#9660;</span> Falling &middot; unfavorable</div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Time-and-materials revenue</span><span class="item-tag">LT</span></div>
+            <div class="item-gloss">Cognizant's T&amp;M revenue fell to 43% of the book, Infosys's to 46% &mdash; the model that funded the industry for four decades is shrinking as a share of revenue.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Entry-level &amp; graduate hiring</span><span class="item-tag">LT</span></div>
+            <div class="item-gloss">TCS cut headcount by 23,460 in FY26; Wipro trimmed fresher-hire guidance to 7,500&ndash;8,000; UK graduate consulting hiring is down roughly 50%.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Billable hours as a growth lever</span><span class="item-tag">LT</span></div>
+            <div class="item-gloss">The four-decade formula &ldquo;grow revenue, grow people&rdquo; is breaking &mdash; AI automates the entry-level work that used to generate the hours.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Geographic labor-cost arbitrage</span><span class="item-tag">LT</span></div>
+            <div class="item-gloss">AI capability gains apply roughly equally onshore and offshore, narrowing the cost gap that funded the classic outsourcing pitch.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Career-ladder predictability</span><span class="item-tag">LT</span></div>
+            <div class="item-gloss">The &ldquo;join as analyst, get promoted through billable apprenticeship&rdquo; path is being rebuilt into a diamond with far fewer entry rungs.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="params-head">Business parameters &middot; service provider</div>
+      <div class="params-grid">
+        <div class="param-card">
+          <h4>Budget justification</h4>
+          <ul>
+            <li>Justify AI tooling spend per delivery pod against fixed-price margin lift &mdash; fixed-price work already runs about 8 points higher operating margin than time-and-materials</li>
+            <li>Budget restructuring and reskilling as a discrete, payback-tracked investment, not overhead &mdash; the way an $865M charge gets tracked against $1B+ in projected savings</li>
+            <li>Track realized (blended) rate, not card rate &mdash; that's where AI-driven erosion shows up first</li>
+          </ul>
+        </div>
+        <div class="param-card">
+          <h4>Jobs &amp; workforce</h4>
+          <ul>
+            <li>Redesign the pyramid into a diamond deliberately &mdash; fewer entry roles, rebuilt around AI supervision and quality ownership &mdash; rather than letting AI hollow out the base by default</li>
+            <li>Report revenue growth against headcount growth explicitly each quarter &mdash; genuine transformation shows revenue decoupling from headcount, not just both shrinking together</li>
+            <li>Protect a minimum entry cohort on purpose &mdash; the junior tier is the apprenticeship system that produces tomorrow's architects</li>
+          </ul>
+        </div>
+        <div class="param-card">
+          <h4>Revenue &amp; profitability</h4>
+          <ul>
+            <li>Set an explicit target mix of fixed-price/outcome-based versus time-and-materials revenue and move it every year</li>
+            <li>Price AI-specialist work at its real premium (roughly 30&ndash;50% over baseline) instead of folding it into standard rate cards</li>
+            <li>Give AI services (implementation, modernization, agentic operations) their own P&amp;L line rather than treating them as a feature of existing delivery</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" id="panel-investor">
+      <p class="panel-intro">The seat that put capital in and is underwriting the return &mdash; VC, growth equity, or PE. You don&rsquo;t build the product; you own the multiple it exits at, and the moat you underwrote at entry.</p>
+
+      <div class="compass">
+        <div class="axis-col good">Good</div>
+        <div class="axis-col bad">Bad</div>
+        <div class="axis-row up">Up</div>
+        <div class="axis-row down">Down</div>
+
+        <div class="quad up-good">
+          <div class="quad-kicker"><span class="arrow">&#9650;</span> Rising &middot; favorable</div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">AI's share of global VC</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">81% of all venture capital &mdash; $240B+ &mdash; flowed to AI companies in Q1 2026 alone, the highest single-sector concentration in VC history.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Premium for architectural AI</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">83% of buyers report paying some AI premium in M&amp;A &mdash; but it goes specifically to products where AI is core to the workflow, not bolted on.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Late-stage capital for winners</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">Late-stage AI funding hit $246.6B in Q1 2026 &mdash; 82% of all venture capital, up 205% year over year &mdash; real dry powder once a company has proven out.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Average seed check size</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">Seed dollars rose 31% year over year even as deal count fell 30% &mdash; the bets that do get made are getting better-capitalized.</div>
+          </div>
+        </div>
+
+        <div class="quad up-bad">
+          <div class="quad-kicker"><span class="arrow">&#9650;</span> Rising &middot; unfavorable</div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Portfolio concentration risk</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">The top 4 rounds of Q1 2026 (OpenAI, Anthropic, xAI, Waymo) totaled $188B &mdash; 63% of all global venture investment. Fewer than 3% of deals took 79% of all capital.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Wrapper-company mortality</span><span class="item-tag">LT</span></div>
+            <div class="item-gloss">80% of AI &ldquo;wrapper&rdquo; startups are projected to fail by the end of 2026; 40% of the entire 2021&ndash;2023 AI funding vintage has already shut down.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Foundation-model cannibalization</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">OpenAI's own feature releases reportedly wiped out 200+ funded &ldquo;GPT wrapper&rdquo; companies in a single year &mdash; a risk that sits above any one portfolio company's execution.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Marks exposed to repricing</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">The same swings that moved the BVP Cloud Index from 15&ndash;20x to 5&ndash;10x, and erased $5.1B of Medallia's equity, apply directly to marks still carried on a fund's own book.</div>
+          </div>
+        </div>
+
+        <div class="quad down-good">
+          <div class="quad-kicker"><span class="arrow">&#9660;</span> Falling &middot; favorable</div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Cost to underwrite a first check</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">AI-assisted diligence and near-zero prototyping cost mean testing a thesis to a first real signal takes a fraction of what it used to.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Cost per portfolio-company experiment</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">Close to a rounding error &mdash; portfolio companies can test more before burning runway toward a follow-on round.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Per-seat AI tool pricing</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">Down roughly 23% year over year &mdash; a small but real tailwind on every portfolio company's burn rate.</div>
+          </div>
+        </div>
+
+        <div class="quad down-bad">
+          <div class="quad-kicker"><span class="arrow">&#9660;</span> Falling &middot; unfavorable</div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Companies actually getting funded</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">Seed deal count fell 30% year over year even as dollars rose &mdash; &ldquo;a handful of companies raising rounds that look like sovereign debt, and everyone else competing for a shrinking pool of capital.&rdquo;</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">A portfolio company's exclusivity window</span><span class="item-tag">LT</span></div>
+            <div class="item-gloss">What a funded rival needed a year to clone, agentic tooling now closes in weeks &mdash; directly undermining the moat thesis a check was underwritten on.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">&ldquo;Has AI&rdquo; as a story on its own</span><span class="item-tag">LT</span></div>
+            <div class="item-gloss">As AI features commoditize, a pitch built on having AI &mdash; rather than what it does with proprietary data or workflow &mdash; stops clearing diligence.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="params-head">Business parameters &middot; investor</div>
+      <div class="params-grid">
+        <div class="param-card">
+          <h4>Budget justification</h4>
+          <ul>
+            <li>Treat &ldquo;has AI&rdquo; as a diligence flag requiring proof, not a premium by default &mdash; 63% of 2025 acquisition targets showed only limited AI use against buyer expectations that 61% of 2026 deal flow would be AI-driven</li>
+            <li>Weight capital toward workflow-embedded and infrastructure plays over thin wrapper bets &mdash; survival rates run 55&ndash;71% in those categories versus roughly 10&ndash;15% for prompt-layer wrappers</li>
+            <li>Size single-name concentration deliberately &mdash; the market is already concentrating capital in a handful of mega-rounds; a fund doesn't need to compound that risk unknowingly</li>
+          </ul>
+        </div>
+        <div class="param-card">
+          <h4>Jobs &amp; workforce</h4>
+          <ul>
+            <li>Push portfolio companies to keep a deliberate junior-hiring floor &mdash; the 33-month entry-level contraction industry-wide applies to every portfolio company's own future senior bench, not just &ldquo;the industry&rdquo;</li>
+            <li>Evaluate a founding team's AI-supervision discipline, not just its AI feature list, as a real diligence criterion</li>
+            <li>Watch for portfolio companies treating &ldquo;we use AI internally&rdquo; as a headcount-reduction talking point without a measured before/after baseline</li>
+          </ul>
+        </div>
+        <div class="param-card">
+          <h4>Revenue &amp; profitability</h4>
+          <ul>
+            <li>Underwrite moat duration explicitly, and shorter than before &mdash; what a funded rival needed a year to copy, agentic tooling now closes in weeks</li>
+            <li>Track portfolio-company gross margin like any COGS-sensitive business &mdash; AI-heavy products near 52% margin need a different return model than the 80%+ SaaS a fund's model may still assume</li>
+            <li>Revisit marks quarterly against the same repricing dynamics moving public comps, rather than carrying a valuation until the next official round</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" id="panel-board">
+      <p class="panel-intro">The seat with fiduciary duty for the enterprise &mdash; setting the long-term vision, approving the capital bets that fund it, and deciding, meeting by meeting, how much of the present gets sacrificed for it.</p>
+
+      <div class="compass">
+        <div class="axis-col good">Good</div>
+        <div class="axis-col bad">Bad</div>
+        <div class="axis-row up">Up</div>
+        <div class="axis-row down">Down</div>
+
+        <div class="quad up-good">
+          <div class="quad-kicker"><span class="arrow">&#9650;</span> Rising &middot; favorable</div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">AI's place on the board agenda</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">69% of boards now include AI in their discussions, up from 55% a year earlier &mdash; only 31% still have nothing on the agenda, down from 45%.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Investment in scenario planning</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">Directors are expanding the scope of each scenario (49%) and increasing time spent on scenario planning (46%) specifically to keep long-term strategy realistic under AI uncertainty.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">AI named as a growth priority</span><span class="item-tag">LT</span></div>
+            <div class="item-gloss">38% of boards identify AI deployment as a leading 2026 growth priority, and 42% expect to direct the most capital toward technology adoption.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Formal oversight integration</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">35% of board members now say AI is already integrated into their oversight activities &mdash; up from a much smaller base a year ago.</div>
+          </div>
+        </div>
+
+        <div class="quad up-bad">
+          <div class="quad-kicker"><span class="arrow">&#9650;</span> Rising &middot; unfavorable</div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Strain on decision quality</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">86% of directors say their board's processes have contributed to a delayed, rushed, or poor decision within the last six months; 84% are actively debating which calls should stay human-led versus AI-led, without having resolved it.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Backward-looking meeting time</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">41% of directors say their board spends at least half its meeting time reviewing past performance rather than planning future strategy &mdash; 51% in the UK specifically.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Scale of the long-term bet being underwritten</span><span class="item-tag">LT</span></div>
+            <div class="item-gloss">The five largest hyperscalers are committing $660&ndash;690B to AI infrastructure in 2026, nearly double 2025 &mdash; while the revenue backing that bet (OpenAI's roughly $20B) is only about 3% of the spend.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Market pricing the payback gap as real risk</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">Amazon's stock dropped roughly 8&ndash;10% on announcing its $200B capex plan &mdash; infrastructure built today can take 18&ndash;36 months to generate proportional returns, and the market is already discounting that lag.</div>
+          </div>
+        </div>
+
+        <div class="quad down-good">
+          <div class="quad-kicker"><span class="arrow">&#9660;</span> Falling &middot; favorable</div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Share of boards still lacking AI fluency</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">Fell to 66% reporting limited-to-no AI knowledge or experience, down from 79% the year before &mdash; still a majority, but real, measurable progress toward the fluency needed to govern AI strategy at all.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Boards with nothing on the AI agenda</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">Down to 31%, from 45% the year before.</div>
+          </div>
+        </div>
+
+        <div class="quad down-bad">
+          <div class="quad-kicker"><span class="arrow">&#9660;</span> Falling &middot; unfavorable</div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Depth of AI in actual strategic decisions</span><span class="item-tag">LT</span></div>
+            <div class="item-gloss">Despite 66% saying AI is used somewhere in the boardroom, only 3% have it fully integrated into risk oversight and strategic decision-making, and 40% don't use it for risk oversight at all &mdash; most of the &ldquo;adoption&rdquo; number is shallow.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Confidence the board enables innovation</span><span class="item-tag">LT</span></div>
+            <div class="item-gloss">Just 18% say their board strongly enables innovation, and only 37% see their board as essential to value creation &mdash; with a wide gap between the C-suite (27%) and non-executive directors (12%) on this exact question.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Tooling to match the ambition</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">90% of boards lack the AI tools needed for the scenario-planning complexity they say they now require, even as 84% say they're changing their approach to keep up.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="params-head">Business parameters &middot; board</div>
+      <div class="params-grid">
+        <div class="param-card">
+          <h4>Budget justification</h4>
+          <ul>
+            <li>Treat a multi-year AI infrastructure commitment as its own strategic decision, not an extension of the normal capex approval process &mdash; the scale (nearing $700B industry-wide in 2026) and the 18&ndash;36 month payback lag are both unprecedented</li>
+            <li>Require management to show the revenue case, not just the compute case, before approving the next tranche &mdash; hyperscaler capex is currently running roughly 30x the revenue of the AI companies it's meant to serve</li>
+            <li>Separate &ldquo;keeping pace with competitors&rdquo; from &ldquo;an underwritten return&rdquo; as two distinct justifications in the board pack, and require management to label which one is driving each ask</li>
+          </ul>
+        </div>
+        <div class="param-card">
+          <h4>Jobs &amp; workforce</h4>
+          <ul>
+            <li>Ask whether the leadership team's AI vision is durable past the current CEO's tenure, given how concentrated AI strategic conviction still is at the top</li>
+            <li>Build real AI fluency into director recruitment and refreshment criteria, not just management's &mdash; 40% of boards already say AI is reshaping who they look for</li>
+            <li>Pressure-test whether &ldquo;AI-first&rdquo; workforce decisions reflect a genuine long-term strategy or a short-term cost story dressed as one</li>
+          </ul>
+        </div>
+        <div class="param-card">
+          <h4>Revenue &amp; profitability</h4>
+          <ul>
+            <li>Put a standing, explicitly forward-looking AI item on every board agenda &mdash; 41% of boards currently spend at least half their meeting time looking backward instead</li>
+            <li>Require scenario plans to cover both a slow-AI-adoption and a fast-AI-adoption future explicitly, given boards are already widening scope (49%) but still lack the tools to do it well (a 90% gap)</li>
+            <li>Make the human-led vs. AI-led decision boundary an explicit, written board policy rather than an ongoing, unresolved debate &mdash; 84% of boards are currently having this debate without having settled it</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" id="panel-cto">
+      <p class="panel-intro">The seat that owns the architecture, the build-vs-buy call, and the engineering org itself &mdash; the one job description that keeps expanding to absorb whatever &ldquo;AI strategy&rdquo; turns out to mean this year.</p>
+
+      <div class="compass">
+        <div class="axis-col good">Good</div>
+        <div class="axis-col bad">Bad</div>
+        <div class="axis-row up">Up</div>
+        <div class="axis-row down">Down</div>
+
+        <div class="quad up-good">
+          <div class="quad-kicker"><span class="arrow">&#9650;</span> Rising &middot; favorable</div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Chief AI Officer as validation</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">76% of organizations now have a Chief AI Officer, up from 26% in 2025 &mdash; real budget and headcount finally attached to a mandate the CTO's office has been carrying alone.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Tech &amp; talent leadership converging</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">77% of leaders say technology and talent leadership roles are converging, and 85% say every functional leader must become a technology expert in their domain.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Direct accountability for AI revenue</span><span class="item-tag">LT</span></div>
+            <div class="item-gloss">CTOs are increasingly judged on turning AI investment into revenue, not just shipping platforms &mdash; several have been elevated to co-president or given product-division ownership as a result.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Delivery throughput</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">2025 was the first year AI adoption correlated positively with delivery throughput and product performance &mdash; a genuine tailwind for the org a CTO actually runs.</div>
+          </div>
+        </div>
+
+        <div class="quad up-bad">
+          <div class="quad-kicker"><span class="arrow">&#9650;</span> Rising &middot; unfavorable</div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Key-person AI talent risk</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">A handful of senior AI researchers moving to a rival lab can materially change delivery timelines, model quality, and product differentiation &mdash; a single-name risk that didn't used to exist at this scale.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Technical debt under your own signature</span><span class="item-tag">LT</span></div>
+            <div class="item-gloss">Duplication near 4x since 2021, genuine refactors down from 25% to under 10% of changes &mdash; debt accumulating on the architecture you're accountable for.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">AI-authored code outpacing its own security bar</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">AI now authors roughly half of all committed code at AI-tool-using organizations, while the average model's security pass rate sits at just 56% &mdash; essentially flat year over year.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Vendor capability gap widening</span><span class="item-tag">LT</span></div>
+            <div class="item-gloss">The gap between leading enterprise AI platforms and the nearest alternative is now described as wider than the gap between Oracle and PostgreSQL &mdash; architecture calls made on thin information now carry outsized lock-in risk.</div>
+          </div>
+        </div>
+
+        <div class="quad down-good">
+          <div class="quad-kicker"><span class="arrow">&#9660;</span> Falling &middot; favorable</div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Cost to prototype an architecture decision</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">Testing a build-vs-buy or platform choice before committing to it is collapsing toward a rounding error.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Per-seat AI tool pricing</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">Down roughly 23% year over year as the market segments and competes.</div>
+          </div>
+        </div>
+
+        <div class="quad down-bad">
+          <div class="quad-kicker"><span class="arrow">&#9660;</span> Falling &middot; unfavorable</div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Visibility into real switching cost</span><span class="item-tag">LT</span></div>
+            <div class="item-gloss">No comprehensive, apples-to-apples measurement of enterprise AI vendor switching cost yet exists; the closest comparable migrations (CRM-class) run 18&ndash;36 months once underway &mdash; budget is committing to platforms whose true lock-in isn't actually being measured.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Your entry-level engineering pipeline</span><span class="item-tag">LT</span></div>
+            <div class="item-gloss">The same 33-month decline in employment for 22&ndash;25 year-old developers applies directly to who you can hire into your own org.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Internal-build success rate</span><span class="item-tag">LT</span></div>
+            <div class="item-gloss">Internally built AI tools succeed at roughly half the rate of vendor-built, workflow-integrated ones &mdash; a real signal against how much in-house AI tooling still gets greenlit by default.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="params-head">Business parameters &middot; CTO</div>
+      <div class="params-grid">
+        <div class="param-card">
+          <h4>Budget justification</h4>
+          <ul>
+            <li>Default to vendor-built, workflow-integrated AI tooling over internal builds where you can &mdash; internally built tools succeed at roughly half the rate in the data</li>
+            <li>Size any single-vendor AI platform commitment against real switching cost, not list price &mdash; comparable enterprise migrations run 18&ndash;36 months once underway</li>
+            <li>Fund a named security review pass for AI-generated code as a budget line, not a courtesy step &mdash; the average model still fails nearly one in three security tasks</li>
+          </ul>
+        </div>
+        <div class="param-card">
+          <h4>Jobs &amp; workforce</h4>
+          <ul>
+            <li>Treat senior AI-research and engineering retention as a named business risk, not routine attrition &mdash; a handful of specific departures can move delivery timelines and product differentiation</li>
+            <li>Keep a deliberate junior-hiring floor even as senior AI-assisted output rises</li>
+            <li>Put code churn and refactor share on the same dashboard as velocity, so a throughput win can't hide its own debt</li>
+          </ul>
+        </div>
+        <div class="param-card">
+          <h4>Revenue &amp; profitability</h4>
+          <ul>
+            <li>Report AI-authored share of the codebase next to its own security pass rate &mdash; not as two metrics nobody reconciles</li>
+            <li>Tie AI infrastructure spend to a measured business outcome before the next budget cycle &mdash; you're already being asked to show this at the CEO and board level</li>
+            <li>Treat multi-model flexibility as an explicit, priced architectural decision, rather than a one-vendor default nobody deliberately chose</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" id="panel-ciso">
+      <p class="panel-intro">The seat that inherits the attack surface everyone else's AI adoption creates &mdash; a marketing team's unsanctioned chatbot, an engineering team's agentic pipeline &mdash; without having approved either.</p>
+
+      <div class="compass">
+        <div class="axis-col good">Good</div>
+        <div class="axis-col bad">Bad</div>
+        <div class="axis-row up">Up</div>
+        <div class="axis-row down">Down</div>
+
+        <div class="quad up-good">
+          <div class="quad-kicker"><span class="arrow">&#9650;</span> Rising &middot; favorable</div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Governance spend finally following the risk</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">85% of breached organizations now plan increased spending on security tools and AI governance &mdash; real budget arriving behind a well-documented threat.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Regulatory clarity arriving</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">The EU AI Act's high-risk obligations become fully enforceable in August 2026 &mdash; an actual compliance bar to build a program against, instead of a moving target.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">AI-specific monitoring normalizing</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">80% of organizations now say they're concerned about data leakage through generative AI &mdash; concern high enough that AI-specific monitoring is becoming a standard line item, not a novelty ask.</div>
+          </div>
+        </div>
+
+        <div class="quad up-bad">
+          <div class="quad-kicker"><span class="arrow">&#9650;</span> Rising &middot; unfavorable</div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Shadow AI usage</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">45% of employees regularly use AI tools on corporate devices; separately, 66% of office professionals at large companies used AI despite believing it violated policy.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Sensitive data actually leaving the building</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">Over a third of office professionals have entered customer data into public AI models; nearly half would rather use AI undisclosed than risk being told no.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Cost of AI-linked breaches</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">Shadow AI incidents more than doubled year over year to 43% of security incidents, adding an average $670K to breach cost; overall average breach cost is now $5M, up 12%.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Agentic AI as a new attack surface</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">88% of enterprises running deployed agents have already experienced an incident; 34% of deployed agents were affected by prompt injection, 61% of incidents tied to over-permissioned credentials.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">AI supply-chain attacks (slopsquatting)</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">AI coding tools hallucinate package names in predictable patterns; one hallucinated name generated 30,000+ real downloads in three months before anyone caught it.</div>
+          </div>
+        </div>
+
+        <div class="quad down-good">
+          <div class="quad-kicker"><span class="arrow">&#9660;</span> Falling &middot; favorable</div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Cost to run AI-specific security testing</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">Falling as red-teaming and AI-specific scanning tools mature, making it cheaper to find a gap before an attacker does.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Per-seat AI tool pricing</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">Down roughly 23% year over year, lowering the cost of moving users onto sanctioned, monitored tools instead of unsanctioned ones.</div>
+          </div>
+        </div>
+
+        <div class="quad down-bad">
+          <div class="quad-kicker"><span class="arrow">&#9660;</span> Falling &middot; unfavorable</div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Access-control maturity</span><span class="item-tag">LT</span></div>
+            <div class="item-gloss">Only 4 in 10 organizations limit access to their AI systems, and two-thirds lack any governance process to limit shadow AI &mdash; a controls gap shrinking too slowly relative to adoption.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Accuracy of leadership's own risk read</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">96% of UK executives felt confident about their AI visibility while 55% of UK employees admitted using unsanctioned tools &mdash; leadership's read on its own exposure is drifting further from the truth, not closer.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Time before a hallucinated dependency gets weaponized</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">One hallucinated package name went from AI suggestion to 30,000+ downloads in three months &mdash; the window between a model's mistake and an attacker exploiting it is short and shrinking.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="params-head">Business parameters &middot; CISO</div>
+      <div class="params-grid">
+        <div class="param-card">
+          <h4>Budget justification</h4>
+          <ul>
+            <li>Fund AI-specific access controls as a named line before the next AI rollout, not after an incident &mdash; 92% of organizations attacked through their AI systems had failed to properly control access to them</li>
+            <li>Size the AI security budget against realized breach cost, not headline risk &mdash; shadow AI incidents alone add an average $670K per breach and now make up 43% of security incidents</li>
+            <li>Budget EU AI Act compliance explicitly per high-risk system (roughly &euro;52,000/year each) rather than folding it into general compliance spend, now that enforcement is fully live</li>
+          </ul>
+        </div>
+        <div class="param-card">
+          <h4>Jobs &amp; workforce</h4>
+          <ul>
+            <li>Give AI-specific security review its own named owner and headcount, not a courtesy pass folded into general code review &mdash; AI-generated code still fails security testing on nearly one in three tasks</li>
+            <li>Train the whole workforce on sanctioned AI tools and their limits, not just the security team &mdash; shadow AI is a workforce-wide behavior gap, not a tooling gap alone</li>
+            <li>Close the leadership-confidence gap directly &mdash; don't let executive sentiment about &ldquo;our AI visibility is fine&rdquo; substitute for a measured audit</li>
+          </ul>
+        </div>
+        <div class="param-card">
+          <h4>Revenue &amp; profitability</h4>
+          <ul>
+            <li>Report shadow AI exposure and agentic-AI incident rate to the board in dollar terms, the same way any other breach-cost line gets reported</li>
+            <li>Treat AI governance maturity as a real factor in cyber-insurance and M&amp;A diligence conversations, not an internal-only concern</li>
+            <li>Price the compliance bill in early &mdash; EU AI Act work already consumes 10&ndash;15% of some organizations' AI budgets, rising to 60&ndash;70% of AI governance budgets for high-risk systems</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel" id="panel-ceo">
+      <p class="panel-intro">The seat that has to turn every quadrant on this board into an actual organization &mdash; who gets hired, how work gets redesigned, and what gets said to the board and the street.</p>
+
+      <div class="compass">
+        <div class="axis-col good">Good</div>
+        <div class="axis-col bad">Bad</div>
+        <div class="axis-row up">Up</div>
+        <div class="axis-row down">Down</div>
+
+        <div class="quad up-good">
+          <div class="quad-kicker"><span class="arrow">&#9650;</span> Rising &middot; favorable</div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">CEO ownership of AI strategy</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">72% of CEOs now call themselves their company's primary AI decision-maker, roughly double a year earlier &mdash; no longer delegated to a CIO or a pilot team.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">ROI optimism</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">80% of CEOs are more confident about AI's return than a year ago, and 94% of organizations plan to keep investing regardless of how 2026 returns land.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Direct personal engagement</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">CEOs identified as &ldquo;pragmatists&rdquo; spend roughly 7 hours a week personally on AI strategy and learning &mdash; real calendar time, not a delegated initiative.</div>
+          </div>
+        </div>
+
+        <div class="quad up-bad">
+          <div class="quad-kicker"><span class="arrow">&#9650;</span> Rising &middot; unfavorable</div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Personal accountability on one bet</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">50% of CEOs say their own job stability now depends on getting AI strategy right &mdash; a strategy call has become a career-risk event, not just a budget line.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">AI-attributed layoffs, and the credibility question</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">AI-linked U.S. layoffs hit roughly 205,000 through August 2026, matching all of 2025 in under eight months; a Cognizant AI executive has publicly warned &ldquo;AI becomes the scapegoat&rdquo; for cuts that were really about over-hiring.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Pilot-to-return conversion pressure</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">95% of enterprise GenAI pilots still show no measured financial return &mdash; a hard number to reconcile publicly against 80% CEO optimism and continued investment.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Uneven confidence by geography</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">Western CEOs report lower ROI confidence and lean more on &ldquo;competitive pressure&rdquo; as the reason to invest, versus roughly 75% ROI confidence among CEOs in India and Greater China &mdash; a harder growth story for some boards than others.</div>
+          </div>
+        </div>
+
+        <div class="quad down-good">
+          <div class="quad-kicker"><span class="arrow">&#9660;</span> Falling &middot; favorable</div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Cost to run an internal pilot</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">Falling fast enough that a claim can be tested cheaply before it's made publicly &mdash; there's less excuse for skipping the before/after baseline.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Cost to equip the workforce</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">Per-seat AI tool pricing down roughly 23% year over year, lowering the cost of one of the CEO's most direct levers.</div>
+          </div>
+        </div>
+
+        <div class="quad down-bad">
+          <div class="quad-kicker"><span class="arrow">&#9660;</span> Falling &middot; unfavorable</div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Credibility of &ldquo;AI-first&rdquo; announcements</span><span class="item-tag">LT</span></div>
+            <div class="item-gloss">As more companies cite AI for cuts, skeptics increasingly read it as an over-hiring correction in disguise &mdash; the believability of the narrative is falling even as the announcements keep coming.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Runway before a real number is due</span><span class="item-tag">ST</span></div>
+            <div class="item-gloss">&ldquo;Investing regardless of returns&rdquo; is language that already sounds like it's pre-justifying a miss &mdash; the window to show board-visible ROI is closing.</div>
+          </div>
+          <div class="item">
+            <div class="item-head"><span class="item-label">Distinctiveness of &ldquo;we use AI&rdquo;</span><span class="item-tag">LT</span></div>
+            <div class="item-gloss">As adoption saturates &mdash; nearly universal CEO involvement, near-universal tool use &mdash; simply having an AI strategy stops differentiating the story to investors.</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="params-head">Business parameters &middot; CEO</div>
+      <div class="params-grid">
+        <div class="param-card">
+          <h4>Budget justification</h4>
+          <ul>
+            <li>Fund AI narrowly against a named baseline before it becomes a headline in an earnings call &mdash; optimism (80% of CEOs) is running ahead of proof (95% of pilots with no measured return)</li>
+            <li>Separate the AI compute line from the headcount budget explicitly &mdash; they behave differently under pressure and get scrutinized by different people on the board</li>
+            <li>Budget the redesign itself &mdash; the apprenticeship-pipeline replacement, the new AI-supervision role &mdash; as a real, funded line rather than assuming it happens on its own</li>
+          </ul>
+        </div>
+        <div class="param-card">
+          <h4>Jobs &amp; workforce</h4>
+          <ul>
+            <li>Separate a real automation case from a hiring correction before it goes in a public layoff announcement &mdash; the credibility cost of getting this wrong compounds with every headline</li>
+            <li>Redesign roles around comparative advantage deliberately, rather than leaving the mix of full-potential and AI co-pilot roles to be decided ad hoc, team by team</li>
+            <li>Fund a deliberate successor to the apprenticeship pipeline your own restructuring may be thinning &mdash; the bill for skipping this doesn't arrive on this year's watch, but it arrives</li>
+          </ul>
+        </div>
+        <div class="param-card">
+          <h4>Revenue &amp; profitability</h4>
+          <ul>
+            <li>Bring the board a dollar-denominated, before/after number, not a sentiment survey &mdash; half of CEOs already say their job depends on getting this call right</li>
+            <li>Report revenue per employee as a real strategic scorecard next to growth, the way AI-native comparables already do</li>
+            <li>Be the one voice in the room turning &ldquo;investing regardless of returns&rdquo; into a specific, falsifiable claim about what this company's AI spend is actually supposed to buy</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="horizon">
+    <div class="section-head">
+      <h2>Short horizon vs. long horizon</h2>
+      <span class="tag">Same forces, read by time</span>
+    </div>
+    <p class="section-note">The compass above sorts by direction and verdict, and reads differently depending on which lens you had open. This cut sorts the same underlying forces by how long they take to matter &mdash; useful for deciding what to fix this quarter versus what to plan the org around, whichever seat you're in.</p>
+
+    <div class="horizon-grid">
+      <div class="horizon-card">
+        <h3>Now through next few quarters</h3>
+        <span class="horizon-span">Short horizon</span>
+
+        <div class="horizon-block benefit">
+          <div class="horizon-block-label">Benefits</div>
+          <ul>
+            <li>Real throughput gains for teams with strong testing and version-control foundations already in place</li>
+            <li>Prototyping and experiment costs collapse toward zero</li>
+            <li>AI tool pricing is falling as the market segments and competes</li>
+          </ul>
+        </div>
+        <div class="horizon-block challenge">
+          <div class="horizon-block-label">Challenges</div>
+          <ul>
+            <li>Felt productivity gains outrun measured ones &mdash; don't plan headcount off a survey</li>
+            <li>New AI features arrive with a real, ongoing inference bill that dents gross margin immediately</li>
+            <li>Personal AI tool use is running well ahead of any sanctioned policy or spend visibility</li>
+            <li>Funding rounds and comps can re-price a business by billions inside a single news cycle</li>
+          </ul>
+        </div>
+      </div>
+
+      <div class="horizon-card">
+        <h3>Two to three-plus years out</h3>
+        <span class="horizon-span">Long horizon</span>
+
+        <div class="horizon-block benefit">
+          <div class="horizon-block-label">Benefits</div>
+          <ul>
+            <li>Structurally leaner, more capital-efficient companies become the norm, not the exception</li>
+            <li>The falling cost to test an idea keeps widening who is able to found a software company</li>
+            <li>Usage- and outcome-based pricing tie what customers pay to value delivered, not seats occupied</li>
+          </ul>
+        </div>
+        <div class="horizon-block challenge">
+          <div class="horizon-block-label">Challenges</div>
+          <ul>
+            <li>Today's thin junior pipeline is tomorrow's senior-engineer shortage</li>
+            <li>Duplication and skipped refactoring compound quietly into debt that's expensive to unwind later</li>
+            <li>Durable advantage increasingly requires owned data and workflow depth &mdash; a plain feature set keeps getting commoditized</li>
+            <li>Value concentrates toward whoever owns the workflow and the data, not whoever ships the most features</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section id="operating-model">
+    <div class="section-head">
+      <h2>The operating-model shift</h2>
+      <span class="tag">Why, underneath everything above</span>
+    </div>
+    <p class="section-note">Every quadrant on every tab is a symptom of one underlying change: cost now has a second variable input alongside people, and it forces a company to rethink capacity, roles, and budgeting &mdash; not just buy new tools.</p>
+
+    <div class="subsection-head">A third input in the production function</div>
+    <div class="horizon-grid">
+      <div class="horizon-card">
+        <h3>The old operating model</h3>
+        <span class="horizon-span">Two inputs</span>
+        <div class="horizon-block neutral-a">
+          <ul>
+            <li>Cost = labor + fixed capital &mdash; once built, serving one more customer cost almost nothing</li>
+            <li>Capacity = headcount, planned annually and slow to move in either direction</li>
+            <li>Judgment was trained as a free byproduct of junior staff doing volume execution work</li>
+          </ul>
+        </div>
+      </div>
+      <div class="horizon-card">
+        <h3>The operating model now</h3>
+        <span class="horizon-span">Three inputs</span>
+        <div class="horizon-block neutral-b">
+          <ul>
+            <li>Cost = labor + fixed capital + AI compute &mdash; a real, usage-linked bill that behaves like a utility, not a headcount line</li>
+            <li>Capacity = a substitution curve between a slow-but-deep input and a fast-but-shallow one, managed deliberately</li>
+            <li>Judgment now has to be trained on purpose &mdash; the free apprenticeship pipeline shrinks along with the junior tier</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="subsection-head">Redesigning roles around comparative advantage</div>
+    <p class="section-note" style="margin-top:-8px;">Not &ldquo;what can AI do&rdquo; &mdash; where is the gap between an AI-adequate outcome and a human-excellent one largest, and whose time should protect that gap?</p>
+    <div class="horizon-grid">
+      <div class="horizon-card">
+        <h3>Full-potential roles</h3>
+        <span class="horizon-span">Where the human/AI gap is largest</span>
+        <div class="horizon-block neutral-a">
+          <ul>
+            <li>Leadership, strategic judgment, and accountability under ambiguity</li>
+            <li>Taste, and framing a problem nobody has specified yet</li>
+            <li>The trust a client or team places in a specific person</li>
+          </ul>
+        </div>
+      </div>
+      <div class="horizon-card">
+        <h3>AI co-pilot roles</h3>
+        <span class="horizon-span">Where AI already closes most of the gap</span>
+        <div class="horizon-block neutral-b">
+          <ul>
+            <li>Directing, verifying, and correcting AI output at volume</li>
+            <li>Elevated throughput on bounded, well-specified work</li>
+            <li>A genuinely new discipline &mdash; not just a faster version of the old junior job</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="subsection-head">Four things this changes about how a company looks at itself</div>
+    <div class="params-grid cols-4">
+      <div class="param-card">
+        <h4>Budgeting</h4>
+        <ul>
+          <li>Moves from an annual headcount exercise to a continuously monitored blend of one sticky input and one liquid one</li>
+          <li>Closer to how a manufacturer plans labor plus a commodity input cost than how software used to plan a fixed R&amp;D budget</li>
+        </ul>
+      </div>
+      <div class="param-card">
+        <h4>Capacity planning</h4>
+        <ul>
+          <li>Becomes an explicit substitution decision instead of an implicit one hidden inside tool procurement</li>
+          <li>Needs a named owner for the mix &mdash; right now most companies decide it ad hoc, tool by tool</li>
+        </ul>
+      </div>
+      <div class="param-card">
+        <h4>Talent strategy</h4>
+        <ul>
+          <li>Has to fund a deliberate replacement for the old apprenticeship pipeline, not assume it still happens for free</li>
+          <li>The bill for skipping this doesn't arrive for years &mdash; which is exactly why it's easy to defer</li>
+        </ul>
+      </div>
+      <div class="param-card">
+        <h4>Strategic self-assessment</h4>
+        <ul>
+          <li>Shifts from &ldquo;how much can we scale headcount&rdquo; to &ldquo;how much leverage per person who holds real judgment&rdquo;</li>
+          <li>Makes revenue per employee a real strategic scorecard, not just an efficiency stat</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="pullquote">Because the AI half of this equation is available to every competitor on roughly the same terms, it can't be the source of durable advantage by itself. Two companies with identical AI spend end up with different economics depending on whether they bolted AI onto the old org chart, or actually redesigned capacity, roles, and budgeting around it.</p>
+  </section>
+
+  <section id="user-expectations">
+    <div class="section-head">
+      <h2>What users now expect</h2>
+      <span class="tag">The ground is shifting under the product, too</span>
+    </div>
+    <p class="section-note">Every quadrant so far is about the builder's side of the ledger. But the baseline a product is judged against isn't fixed either &mdash; it's set by how AI-literate the person on the other end of the product has become, and that's moving faster than most roadmaps assume.</p>
+
+    <div class="subsection-head">Fluency is compounding faster than trust</div>
+    <div class="horizon-grid">
+      <div class="horizon-card">
+        <h3>What's rising fast</h3>
+        <span class="horizon-span">Capability expectations</span>
+        <div class="horizon-block neutral-a">
+          <ul>
+            <li>Weekly AI use among U.S. workers roughly doubled in under two years &mdash; 27% in Q2 2024 to 50% by Q1 2026, with daily use up from 4% to 13%</li>
+            <li>Adoption is no longer generational: Gen Z, Millennial, and Boomer usage are all climbing quarter over quarter, just from different starting points</li>
+            <li>The default posture shifts from &ldquo;does this have an AI feature&rdquo; to &ldquo;why isn't this already agentic, personalized, and proactive&rdquo;</li>
+          </ul>
+        </div>
+      </div>
+      <div class="horizon-card">
+        <h3>What isn't rising as fast</h3>
+        <span class="horizon-span">Trust &amp; enthusiasm</span>
+        <div class="horizon-block neutral-b">
+          <ul>
+            <li>79% of consumers still say humans understand them better than AI does, and 91% prefer a human over a chatbot for support</li>
+            <li>Skepticism and concern lead consumer sentiment toward AI (28% each) over being impressed (26%) or excited (18%)</li>
+            <li>Only 27% of consumers say AI features make a product more appealing &mdash; familiarity is outrunning approval</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <div class="subsection-head">Expected as a baseline, not paid for as a premium</div>
+    <p class="section-note" style="margin-top:-8px;">The same survey population that's rapidly getting AI-fluent is, in the same period, getting less willing to pay extra for it &mdash; which turns rising usage into a rising cost with no matching revenue line.</p>
+    <div class="params-grid cols-4">
+      <div class="param-card">
+        <h4>Willingness to pay is falling, not rising</h4>
+        <ul>
+          <li>50% of U.S. smartphone owners now say they won't pay extra for AI features, up from 45% a year earlier</li>
+          <li>Fewer than 12% of iPhone owners and 4% of Samsung owners say they'd pay for an AI subscription specifically</li>
+        </ul>
+      </div>
+      <div class="param-card">
+        <h4>Baseline vs. differentiator</h4>
+        <ul>
+          <li>AI moves from a marketed feature to assumed infrastructure &mdash; like search or spellcheck before it</li>
+          <li>Differentiation has to come from what the AI does with your workflow and data, not from the fact that it exists</li>
+        </ul>
+      </div>
+      <div class="param-card">
+        <h4>Trust has to be designed, not assumed</h4>
+        <ul>
+          <li>Because skepticism lags fluency, interfaces need to show their work &mdash; sourcing, confidence, an easy path to a human</li>
+          <li>A feature that quietly works can still lose users if it never earns visible trust</li>
+        </ul>
+      </div>
+      <div class="param-card">
+        <h4>One UX, uneven starting fluency</h4>
+        <ul>
+          <li>31% of Gen Z and 19% of Boomers use AI at work &mdash; the same product serves both ends of that gap simultaneously</li>
+          <li>Onboarding and defaults can no longer assume a single starting level of comfort with the AI in the product</li>
+        </ul>
+      </div>
+    </div>
+
+    <p class="pullquote">The uncomfortable combination is that users expect more from AI and expect to pay nothing extra for it, while trusting it less than the feature list implies they should. That's not a marketing problem to spend past &mdash; it's a product-economics problem: the inference bill for meeting a rising expectation has to be absorbed inside the existing price, earned back in retention, or it doesn't get built at all.</p>
+  </section>
+
+  <section id="script">
+    <div class="section-head">
+      <h2>Running this with a product maker</h2>
+      <span class="tag">Five questions, one sitting</span>
+    </div>
+    <p class="section-note">Pick the tab that matches who's across the table, walk the compass with them first so the picture is shared, then work through these in order. Each one turns a quadrant into a decision.</p>
+
+    <div class="script">
+      <div class="script-step">
+        <div>
+          <h4>Locate yourself</h4>
+          <p>Have them point at the compass, not describe it &mdash; on whichever lens matches their seat.</p>
+          <p class="ask">"Which quadrant is your business's headline metric sitting in right now?"</p>
+        </div>
+      </div>
+      <div class="script-step">
+        <div>
+          <h4>Split the pain by horizon</h4>
+          <p>Not everything bad is structural &mdash; some of it is a governance gap.</p>
+          <p class="ask">"Of what's in your Bad columns, what's fixable with process this quarter, and what's actually structural?"</p>
+        </div>
+      </div>
+      <div class="script-step">
+        <div>
+          <h4>Price the moat</h4>
+          <p>This is the question the valuation section is really asking &mdash; product spec or delivery playbook, same question.</p>
+          <p class="ask">"If a funded competitor had your spec or your playbook, and today's AI tooling, how many weeks to reach parity?"</p>
+        </div>
+      </div>
+      <div class="script-step">
+        <div>
+          <h4>Check the margin</h4>
+          <p>The number most roadmaps skip.</p>
+          <p class="ask">"What share of the revenue from your new AI features is spent on inference before it reaches gross profit?"</p>
+        </div>
+      </div>
+      <div class="script-step">
+        <div>
+          <h4>Check the bench</h4>
+          <p>The long-horizon question that's easiest to defer.</p>
+          <p class="ask">"Who below your most senior engineer actually understands the system end-to-end, not just the parts AI touched?"</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p class="note">Figures are drawn from primary research and named industry analysis current as of mid-to-late 2025 and 2026; treat this as a snapshot of a fast-moving market, not a fixed baseline. Full source detail and additional context is in the companion research brief.</p>
+    <div class="sources">
+      <a href="https://cloud.google.com/blog/products/ai-machine-learning/announcing-the-2025-dora-report">2025 DORA Report &mdash; Google Cloud</a>
+      <a href="https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/">AI &amp; developer productivity &mdash; METR</a>
+      <a href="https://www.gitclear.com/ai_assistant_code_quality_2025_research">AI copilot code quality &mdash; GitClear</a>
+      <a href="https://www.oliverwyman.com/our-expertise/insights/2026/apr/how-agentic-ai-reshaping-saas-valuations.html">Agentic AI &amp; SaaS valuation &mdash; Oliver Wyman</a>
+      <a href="https://developmentcorporate.com/corporate-development/saas-ma-2026-ai-valuation-gap/">The AI valuation gap &mdash; Development Corporate</a>
+      <a href="https://ca.finance.yahoo.com/news/thoma-bravo-5-1b-medallia-170011858.html">Medallia's $5.1B wipeout &mdash; Yahoo Finance</a>
+      <a href="https://www.cnbc.com/2025/11/13/cursor-ai-startup-funding-round-valuation.html">Cursor's $29.3B round &mdash; CNBC</a>
+      <a href="https://nicktalwar.substack.com/p/4m-revenue-per-employee-is-the-new">Revenue per employee &mdash; Nick Talwar</a>
+      <a href="https://www.finops.org/wg/token-economics-saas/">AI token economics &mdash; FinOps Foundation</a>
+      <a href="https://getdx.com/blog/ai-coding-assistant-pricing/">AI coding tool ROI &mdash; getDX</a>
+      <a href="https://blog.vibecoder.me/ai-coding-tool-pricing-trends-race-to-bottom">AI coding tool pricing trends &mdash; Vibe Coder</a>
+      <a href="https://www.legal.io/blog/5719519/MIT-Report-Finds-95-of-AI-Pilots-Fail-to-Deliver-ROI-Exposing-GenAI-Divide">95% of AI pilots miss ROI &mdash; MIT / Legal.io</a>
+      <a href="https://www.forbes.com/sites/josipamajic/2026/08/09/coding-jobs-vanish-for-juniors-as-ai-reshapes-career-path/">Junior coding jobs &mdash; Forbes</a>
+      <a href="https://techcrunch.com/2025/07/14/cognition-maker-of-the-ai-coding-agent-devin-acquires-windsurf/">The Windsurf acquisition &mdash; TechCrunch</a>
+      <a href="https://www.forbes.com/councils/forbestechcouncil/2026/08/06/ai-isnt-failing-the-it-services-business-model-is/">The IT services model, not AI &mdash; Forbes</a>
+      <a href="https://gulfnews.com/technology/accenture-cuts-thousands-of-jobs-in-global-ai-restructuring-1.500290493">Accenture's AI restructuring &mdash; Gulf News</a>
+      <a href="https://www.itiger.com/news/1135883589">Consulting salary freezes &mdash; iTiger</a>
+      <a href="https://www.communicationstoday.co.in/ai-tools-push-it-services-firms-away-from-traditional-billing-models/">Fixed-price shift at Cognizant &amp; Infosys &mdash; Communications Today</a>
+      <a href="https://lapaasvoice.com/tcs-layoffs-2026-indian-it-business-model">TCS's FY26 headcount &mdash; Lapaas Voice</a>
+      <a href="https://www.raftlabs.com/blog/software-development-consulting-rates">2026 consulting rate benchmarks &mdash; RaftLabs</a>
+      <a href="https://tech-insider.org/q1-2026-venture-capital-297-billion-ai-startup-funding-record/">Q1 2026 VC concentration in AI &mdash; Tech Insider</a>
+      <a href="https://valueaddvc.com/blog/how-to-build-a-startup-in-a-market-where-ai-will-eventually-do-what-you-do">AI wrapper failure &amp; moat survival rates &mdash; Value Add VC</a>
+      <a href="https://newsroom.ibm.com/2026-05-04-ibm-study-ceos-are-reshaping-c-suite-roles-for-the-ai-era">C-suite roles reshaping for AI &mdash; IBM</a>
+      <a href="https://theartofcto.com/insights/2026-01-15-cto-role-is-becoming-ai-product-leadership">The CTO role converging with AI &amp; product leadership &mdash; The Art of CTO</a>
+      <a href="https://www.vaasblock.com/research/enterprise-ai-vendor-lock-in-switching-costs-copilot-agentforce-2026/">Enterprise AI vendor lock-in &amp; switching costs &mdash; VaaS Block</a>
+      <a href="https://www.veracode.com/blog/2026-genai-code-security-report-ai-risk/">2026 GenAI Code Security Report &mdash; Veracode</a>
+      <a href="https://www.techtimes.com/articles/318438/20260615/shadow-ai-cybersecurity-risk-spikes-45-workers-use-unsanctioned-tools.htm">Shadow AI usage statistics &mdash; Tech Times</a>
+      <a href="https://www.cybersecuritydive.com/news/data-breach-costs-ai-governance-ibm/826463/">Data breach costs &amp; AI governance &mdash; Cybersecurity Dive / IBM</a>
+      <a href="https://shattered.io/agentic-ai-security-2026/">Agentic AI security incident statistics &mdash; Shattered</a>
+      <a href="https://www.aikido.dev/blog/slopsquatting-ai-package-hallucination-attacks">Slopsquatting &amp; AI package hallucination attacks &mdash; Aikido</a>
+      <a href="https://sqmagazine.co.uk/eu-ai-act-compliance-cost-statistics/">EU AI Act compliance cost statistics &mdash; SQ Magazine</a>
+      <a href="https://www.boardintelligence.com/blog/board-value-index-summer-2026-global-press-release">Board Value Index, Summer 2026 &mdash; Board Intelligence</a>
+      <a href="https://www.businesswire.com/news/home/20260127108462/en/Boards-Double-Down-on-Scenario-Planning-but-90-Lack-AI-Tools-to-Keep-Pace">Boards double down on scenario planning &mdash; Business Wire</a>
+      <a href="https://www.deloitte.com/global/en/issues/trust/progress-on-ai-in-the-boardroom-but-room-to-accelerate.html">Governance of AI in the boardroom &mdash; Deloitte Global</a>
+      <a href="https://www.pwc.com/us/en/services/governance-insights-center/library/corporate-governance-trends.html">2026 corporate governance trends &mdash; PwC</a>
+      <a href="https://futurumgroup.com/insights/ai-capex-2026-the-690b-infrastructure-sprint/">2026 AI infrastructure capex, the $690B sprint &mdash; Futurum</a>
+      <a href="https://finance.yahoo.com/news/heres-why-metas-135-billion-192122813.html">Meta's $135B AI capex bet &mdash; Yahoo Finance</a>
+      <a href="https://www.tomshardware.com/tech-industry/tech-industry-lays-off-nearly-80-000-employees-in-the-first-quarter-of-2026-almost-50-percent-of-affected-positions-cut-due-to-ai">Q1 2026 tech layoffs &amp; AI attribution &mdash; Tom's Hardware</a>
+      <a href="https://news.outsourceaccelerator.com/ai-layoffs-205000/">205,000 AI-linked layoffs in 2026 &mdash; Outsource Accelerator</a>
+      <a href="https://www.bcg.com/publications/2026/as-ai-investments-surge-ceos-take-the-lead">CEOs taking the lead on AI investment &mdash; BCG</a>
+      <a href="https://www.surveymonkey.com/curiosity/ai-workplace-statistics/">AI in the workplace &amp; consumer trust statistics &mdash; SurveyMonkey</a>
+      <a href="https://www.gallup.com/workplace/704225/rising-adoption-spurs-workforce-changes.aspx">Rising AI adoption spurs workforce changes &mdash; Gallup</a>
+      <a href="https://www.emarketer.com/content/consumers-unwilling-pay-ai-features-1">Consumers unwilling to pay for AI features &mdash; eMarketer</a>
+    </div>
+  </footer>
+
+</div>
+
+</body>
+</html>

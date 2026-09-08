@@ -1,0 +1,463 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>The Economics of AI-Era Software Development</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%F0%9F%93%9C%3C/text%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;1,400;1,500&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    --paper: #F0EFE7;
+    --paper-raised: #FFFFFF;
+    --ink: #211F1A;
+    --ink-soft: #5B584C;
+    --ink-faint: #8D8A7C;
+    --line: #DAD6C6;
+    --line-strong: #C2BCA6;
+    --accent: #8A6A24;
+    --accent-strong: #6B5119;
+    --accent-soft: #EFE3C0;
+    --shadow: 0 1px 2px rgba(33,31,26,0.06), 0 8px 24px rgba(33,31,26,0.05);
+    --font-display: "Newsreader", Georgia, "Times New Roman", serif;
+    --font-ui: "Work Sans", -apple-system, "Segoe UI", sans-serif;
+    --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #17150F;
+      --paper-raised: #201D15;
+      --ink: #F1EDE1;
+      --ink-soft: #B6AF9B;
+      --ink-faint: #857E6C;
+      --line: #362F20;
+      --line-strong: #4A4029;
+      --accent: #D9AE5C;
+      --accent-strong: #ECC983;
+      --accent-soft: #2E2712;
+      --shadow: 0 1px 2px rgba(0,0,0,0.4), 0 12px 28px rgba(0,0,0,0.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #17150F;
+    --paper-raised: #201D15;
+    --ink: #F1EDE1;
+    --ink-soft: #B6AF9B;
+    --ink-faint: #857E6C;
+    --line: #362F20;
+    --line-strong: #4A4029;
+    --accent: #D9AE5C;
+    --accent-strong: #ECC983;
+    --accent-soft: #2E2712;
+    --shadow: 0 1px 2px rgba(0,0,0,0.4), 0 12px 28px rgba(0,0,0,0.35);
+  }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-display);
+    font-size: 18px;
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection { background: var(--accent-soft); color: var(--ink); }
+
+  a { color: var(--accent-strong); text-decoration-color: var(--line-strong); text-underline-offset: 3px; }
+  a:hover { text-decoration-color: var(--accent-strong); }
+  a:focus-visible, button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  .shell {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: clamp(28px, 5vw, 64px) clamp(18px, 4vw, 40px) 80px;
+    display: grid;
+    grid-template-columns: 200px minmax(0, 700px);
+    gap: clamp(24px, 5vw, 64px);
+    justify-content: center;
+  }
+
+  /* ---------- Hero ---------- */
+
+  .hero {
+    grid-column: 1 / -1;
+    max-width: 700px;
+    margin: 0 auto clamp(40px, 7vw, 64px);
+    padding-bottom: clamp(28px, 5vw, 40px);
+    border-bottom: 1px solid var(--line);
+  }
+  .eyebrow {
+    font-family: var(--font-ui);
+    font-size: 12.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent-strong);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .eyebrow::before {
+    content: "";
+    width: 26px;
+    height: 1px;
+    background: var(--accent-strong);
+    display: inline-block;
+  }
+  h1.title {
+    font-weight: 500;
+    font-style: italic;
+    font-size: clamp(32px, 5vw, 46px);
+    line-height: 1.14;
+    letter-spacing: -0.01em;
+    margin: 0 0 16px;
+    text-wrap: balance;
+  }
+  .dek {
+    font-family: var(--font-ui);
+    font-size: clamp(15.5px, 1.7vw, 17.5px);
+    font-style: normal;
+    color: var(--ink-soft);
+    max-width: 56ch;
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  /* ---------- TOC rail ---------- */
+
+  .toc {
+    position: sticky;
+    top: clamp(20px, 4vw, 40px);
+    align-self: start;
+    font-family: var(--font-ui);
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding-top: 4px;
+  }
+  .toc-kicker {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 10px;
+  }
+  .toc a {
+    display: flex;
+    align-items: baseline;
+    gap: 9px;
+    padding: 6px 0;
+    color: var(--ink-soft);
+    text-decoration: none;
+    font-size: 13.5px;
+    line-height: 1.35;
+    border-left: 2px solid transparent;
+    padding-left: 10px;
+    margin-left: -12px;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+  .toc a:hover { color: var(--ink); border-left-color: var(--line-strong); }
+  .toc-numeral {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--accent-strong);
+    flex: none;
+    padding-top: 1px;
+  }
+  .toc a.toc-plain { padding-left: 10px; }
+  .toc a.toc-plain .toc-label { color: var(--ink-faint); font-size: 12.5px; letter-spacing: 0.02em; }
+  .toc a.toc-plain:hover .toc-label { color: var(--ink-soft); }
+
+  /* ---------- Article body ---------- */
+
+  article { min-width: 0; }
+
+  article > h2 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    margin: clamp(52px, 8vw, 76px) 0 22px;
+    padding-top: clamp(28px, 5vw, 40px);
+    border-top: 1px solid var(--line);
+  }
+  article > h2:first-child { margin-top: 0; padding-top: 0; border-top: none; }
+
+  h2.plain-head {
+    font-size: clamp(22px, 2.6vw, 27px);
+    font-style: italic;
+    line-height: 1.25;
+    text-wrap: balance;
+  }
+
+  h2.part-head {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: baseline;
+    column-gap: 18px;
+    row-gap: 2px;
+  }
+  .part-numeral {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--paper);
+    background: var(--accent-strong);
+    padding: 3px 9px 4px;
+    border-radius: 3px;
+    align-self: start;
+  }
+  .part-title {
+    font-size: clamp(22px, 2.7vw, 28px);
+    line-height: 1.22;
+    text-wrap: balance;
+  }
+
+  h2.sources-head {
+    font-size: clamp(20px, 2.4vw, 24px);
+    font-family: var(--font-ui);
+    font-style: normal;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-soft);
+  }
+
+  article h3 {
+    font-family: var(--font-ui);
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: 0.01em;
+    color: var(--accent-strong);
+    margin: 30px 0 10px;
+    text-transform: none;
+  }
+  article > h2 + h3 { margin-top: 4px; }
+
+  article p {
+    margin: 0 0 20px;
+    max-width: 66ch;
+  }
+
+  article strong { font-weight: 600; color: var(--ink); }
+  article em { font-style: italic; }
+
+  article p code, article li code {
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    background: var(--accent-soft);
+    padding: 0.1em 0.35em;
+    border-radius: 3px;
+  }
+
+  .sourcing-note {
+    font-style: italic;
+    color: var(--ink-faint);
+    font-size: 15px;
+    max-width: 66ch;
+    border-top: 1px solid var(--line);
+    padding-top: 20px;
+    margin-top: 36px;
+  }
+
+  /* ---------- Sources list ---------- */
+
+  ul.sources-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    counter-reset: src;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  ul.sources-list li {
+    counter-increment: src;
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    gap: 12px;
+    padding: 11px 0;
+    border-top: 1px solid var(--line);
+    font-family: var(--font-ui);
+    font-size: 14.5px;
+  }
+  ul.sources-list li:first-child { border-top: none; }
+  ul.sources-list li::before {
+    content: counter(src, decimal-leading-zero);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--ink-faint);
+    padding-top: 2px;
+  }
+  ul.sources-list li a { color: var(--ink-soft); text-decoration: none; }
+  ul.sources-list li a:hover { color: var(--accent-strong); text-decoration: underline; text-decoration-color: var(--line-strong); }
+
+  hr { display: none; }
+
+  footer.colophon {
+    grid-column: 1 / -1;
+    max-width: 700px;
+    margin: clamp(48px, 8vw, 72px) auto 0;
+    padding-top: 22px;
+    border-top: 1px solid var(--line);
+    font-family: var(--font-ui);
+    font-size: 12.5px;
+    color: var(--ink-faint);
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 880px) {
+    .shell { grid-template-columns: minmax(0, 1fr); }
+    .toc {
+      position: static;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 8px 14px;
+      padding: 14px 16px;
+      background: var(--paper-raised);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      margin: 0 auto clamp(32px, 7vw, 48px);
+      max-width: 700px;
+      box-shadow: var(--shadow);
+    }
+    .toc-kicker { width: 100%; margin-bottom: 2px; }
+    .toc a { padding: 3px 0; margin-left: 0; border-left: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .toc a { transition: none; }
+  }
+</style>
+</head>
+<body>
+<div class="shell">
+  <header class="hero">
+    <div class="eyebrow">Research brief &middot; August 2026</div>
+    <h1 class="title">The Economics of AI-Era Software Development</h1>
+    <p class="dek">Metrics, valuation volatility, and cost discipline in a market being rewritten in real time</p>
+  </header>
+
+  <nav class="toc">
+    <div class="toc-kicker">In this brief</div>
+    <a href="#why-this-needs-a-fresh-economic-lens" class="toc-plain"><span class="toc-label">Why this needs a fresh economic lens</span></a>
+      <a href="#part-i-do-the-old-metrics-still-tell-the-truth"><span class="toc-numeral">I</span><span class="toc-label">Do the old metrics still tell the truth?</span></a>
+      <a href="#part-ii-why-intangible-software-assets-have-become-this-volatile"><span class="toc-numeral">II</span><span class="toc-label">Why intangible software assets have become this volatile</span></a>
+      <a href="#part-iii-building-products-without-breaking-the-bank"><span class="toc-numeral">III</span><span class="toc-label">Building products without breaking the bank</span></a>
+      <a href="#part-iv-second-order-effects-that-shape-all-of-the-above"><span class="toc-numeral">IV</span><span class="toc-label">Second-order effects that shape all of the above</span></a>
+      <a href="#part-v-how-companies-need-to-change-from-a-headcount-plan-to-a-two-input-operating-model"><span class="toc-numeral">V</span><span class="toc-label">How companies need to change: from a headcount plan to a two-input operating model</span></a>
+      <a href="#bringing-it-together-a-working-checklist-for-a-healthy-ai-era-software-business" class="toc-plain"><span class="toc-label">Bringing it together: a working checklist for a healthy AI-era software business</span></a>
+      <a href="#sources" class="toc-plain"><span class="toc-label">Sources</span></a>
+  </nav>
+
+  <article>
+    <h2 class="plain-head" id="why-this-needs-a-fresh-economic-lens">Why this needs a fresh economic lens</h2>
+<p>Software organizations have spent two decades converging on a shared vocabulary for what “healthy” looks like: DORA metrics for delivery, ARR and net revenue retention for growth, 75–85% gross margins as the baseline for a “real” software business, and revenue multiples as the common currency of valuation. Autopilot tools (Devin, Claude Code, Cursor’s agent mode, GitHub Copilot’s coding agent) and copilot tools (inline completion, chat-assisted review) have not just changed <em>how</em> code gets written — they have quietly invalidated several of the assumptions those metrics were built on. Output can now scale without headcount, but the extra output does not automatically become extra value, extra stability, or extra margin. Meanwhile the same AI that lowers a founder’s cost to build a product also lowers the cost for a competitor — or a customer — to build something that replaces it. That combination is what is producing the volatility this brief tries to make legible: in delivery metrics, in company valuations, and in unit economics.</p>
+<p>The sections below work through three linked questions the user asked about directly — whether current business metrics still capture organizational health when AI is doing a growing share of the work, why intangible software assets are repricing so violently under AI-driven competitive threat, and how to build products without the AI cost structure quietly eating the business — before turning to second-order effects (labor, technical debt, pricing) that shape all three, and closing with the operating-model question underneath everything else: what actually has to change about how a company plans, budgets, and organizes once cost has two variable inputs instead of one.</p>
+<h2 class="part-head" id="part-i-do-the-old-metrics-still-tell-the-truth"><span class="part-numeral">I</span><span class="part-title">Do the old metrics still tell the truth?</span></h2>
+<h3 id="the-amplifier-effect-not-the-productivity-miracle">The amplifier effect, not the productivity miracle</h3>
+<p>The most authoritative annual read on this question is Google Cloud’s <strong>2025 DORA (DevOps Research and Assessment) report</strong>, based on survey data from tens of thousands of practitioners. Its central finding reframes the whole debate: AI does not fix a team’s problems, it amplifies whatever is already there. High-performing teams with strong version control, automated testing, and fast feedback loops get measurably faster and more effective with AI. Teams without those foundations get faster at producing problems. Concretely, the 2025 report found a <em>positive</em> relationship between AI adoption and both delivery throughput and product performance — a reversal from 2024 — but a <em>negative</em> relationship between AI adoption and delivery <strong>stability</strong>. Ninety percent of respondents now use AI at work and over 80% believe it has increased their personal productivity, yet roughly 30% still report little or no trust in AI-generated code. DORA’s response was to introduce a seven-capability model (clear AI policy, AI connected to internal context, strong foundational engineering practices, safety nets, platform investment, user-centricity) as the precondition for AI showing up as throughput rather than instability, and a set of team “archetypes” ranging from teams trapped in reactive firefighting to “harmonious high achievers” — the implicit argument being that a single productivity number was never going to capture what’s happening; the shape of the organization matters as much as the tool.</p>
+<h3 id="the-perception-gap-metrs-19-finding">The perception gap: METR’s 19% finding</h3>
+<p>If DORA shows the effect is organization-dependent, <strong>METR’s randomized controlled trial</strong> (July 2025) shows why self-reported productivity is close to useless as a metric on its own. Sixteen experienced open-source developers completed 246 real repository issues, randomly assigned to use or not use AI tools (Cursor Pro with Claude 3.5/3.7 Sonnet). Developers who used AI took <strong>19% longer</strong> to finish the same class of task than developers who didn’t. Before the study, they had predicted AI would make them 24% faster; after finishing — having just been measurably slower — they still estimated AI had made them about 20% faster. That gap between lived experience and measured outcome is the single most important caution in this whole space: dashboards built on developer sentiment (satisfaction surveys, “felt productivity,” adoption rate) will systematically overstate value, and organizations that stop at those metrics will not notice the slowdown hiding underneath the good feeling.</p>
+<h3 id="activity-is-inflating-faster-than-value">Activity is inflating faster than value</h3>
+<p><strong>GitClear’s</strong> analysis of 211 million changed lines of code across five years (2020–2024) supplies the mechanism behind that gap. As AI-assisted coding became mainstream (63% of developers using it), duplicated/copy-pasted code rose from 8.3% to 12.3% of changed lines — roughly a fourfold jump in code cloning — while the share of changes classified as genuine refactoring fell from 25% to under 10%. Code churn (lines rewritten within two weeks of being written, a classic proxy for low-quality first drafts) rose from 5.5% to 7.9%. None of this shows up as a negative in the metrics most engineering orgs still track — lines of code, PRs opened, commits merged, even deployment frequency all go up. It shows up later, as maintainability debt, and it is exactly the kind of cost that a metrics stack optimized for velocity will not surface until it’s expensive.</p>
+<h3 id="what-a-metrics-stack-needs-to-add">What a metrics stack needs to add</h3>
+<p>Put together, DORA, METR, and GitClear describe the same failure mode from three angles: legacy engineering metrics were built to measure <em>effort</em> and <em>throughput</em> under an assumption that a human was the rate-limiter, and AI breaks that assumption in a way that makes throughput easy to inflate and quality easy to hide. The practical response, echoed across current engineering-productivity research (DX’s Core 4, updated SPACE guidance, Faros AI’s 2026 measurement guides), is not a replacement metric but an additional layer:</p>
+<p>Outcome and business-linkage metrics — deployment frequency and lead time are retained, but tied explicitly to downstream business signals (revenue, retention, incident cost) rather than treated as ends in themselves, because “PRs opened” and “lines shipped” inflate without corresponding value.</p>
+<p>Quality counterweights measured in the same cadence as velocity — code churn, duplication rate, change-failure rate, and defect escape rate tracked alongside throughput specifically so a velocity gain can’t be reported without its quality cost sitting next to it.</p>
+<p>AI-specific instrumentation — adoption and acceptance rates per tool, AI-attributable share of merged code, and “token intelligence” (cost and quality per unit of AI-assisted output) as a new metric category that didn’t need to exist three years ago.</p>
+<p>Independent validation of self-report — because of the METR gap, any organization relying on developer surveys to size AI’s benefit should treat that number as a ceiling, not an estimate, and validate it against actual cycle-time and defect data before making a budget or headcount decision on it.</p>
+<p>One widely cited industry data point captures the current state bluntly: DX’s analysis of 400+ organizations found a median <strong>PR throughput gain of only 7.76%</strong> from AI coding tools — a real but modest number, far below the “3–10x” figures used in vendor marketing, and consistent with the observation that coding itself is only about 14% of a typical developer’s day, so even halving coding time barely moves total delivery time once code review and integration bottlenecks are accounted for.</p>
+<h2 class="part-head" id="part-ii-why-intangible-software-assets-have-become-this-volatile"><span class="part-numeral">II</span><span class="part-title">Why intangible software assets have become this volatile</span></h2>
+<h3 id="three-assumptions-that-used-to-hold-and-now-dont">Three assumptions that used to hold, and now don’t</h3>
+<p>Software company valuations — public multiples, private M&amp;A pricing, and internally capitalized software IP alike — were built on three quiet assumptions, laid out clearly in Oliver Wyman’s 2026 analysis of agentic AI’s effect on SaaS valuation: that software is hard and slow to build (so an incumbent’s codebase and roadmap constitute a real moat), that value grows through seat expansion (so more users of a workflow means more revenue, almost automatically), and that a polished interface is itself a source of differentiation. Generative and agentic AI attacks all three simultaneously. Agents can now scaffold competing functionality quickly, which erodes “build difficulty” as a moat. Agents increasingly execute the workflow directly rather than requiring a human to click through software, which weakens the seat-expansion growth engine even for tools that are otherwise sticky. And AI-native competitors can commoditize a feature set faster than a UX team can differentiate around it. The result, per that analysis, is that the market is now pricing structural disruption risk into recurring-revenue software broadly — and because nobody has firm evidence yet of exactly <em>which</em> categories are safe, “uncertainty is contagious”: AI announcements have triggered selloffs well beyond the specific companies or categories being disrupted.</p>
+<h3 id="what-the-repricing-has-actually-looked-like">What the repricing has actually looked like</h3>
+<p>The scale is visible in public multiples. The Battery Ventures / BVP Cloud Index, a standard benchmark for public SaaS valuation, fell from roughly 15–20x forward revenue at the 2021 peak to roughly 5–10x in 2026, with the most AI-exposed categories (customer experience, contact center software) trading at 2–5x. Part of that decline predates AI and is macro-driven — the 10-year Treasury moving from under 1% to roughly 4–4.5% mechanically raised the cost of capital used to discount future SaaS cash flows by 200–300 basis points, and growth deceleration/net-retention softening had already been compressing multiples since 2022 — but industry analysis attributes a further, sharper leg of repricing in late 2025 through Q1 2026 specifically to the “AI inflection”: the point at which agentic tools made horizontal, seat-priced SaaS look partially substitutable rather than merely maturing.</p>
+<p>The private-equity take-private cohort from the 2021–2022 buyout boom illustrates what that repricing does to real capital. Thoma Bravo’s Medallia, bought for $6.4 billion in 2021, is undergoing a debt-for-equity restructuring expected to wipe out roughly $5.1 billion of equity value; Orlando Bravo has publicly called the entry price a mistake driven by peak-cycle growth assumptions. A broader group of 2021–2022 SaaS take-privates — Anaplan ($10.7B), Coupa ($8B), SailPoint ($6.9B), Proofpoint ($12.3B), RealPage ($10.2B), Citrix ($16.5B), Avalara ($8.4B) — is reportedly stuck near entry multiples with no clean exit path, a direct illustration of how quickly “intangible” enterprise value (the capitalized worth of a codebase, a customer base, and a brand) can become stranded when the competitive and rate environment shifts under it.</p>
+<h3 id="a-case-study-in-real-time-windsurfs-72-hour-valuation-collapse-and-rebuild">A case study in real time: Windsurf’s 72-hour valuation collapse and rebuild</h3>
+<p>If one wants a single illustration of how volatile intangible AI-adjacent value has become, the Windsurf saga from July 2025 is close to a textbook case. OpenAI had a roughly $3 billion acquisition agreement in motion; it collapsed, reportedly over Microsoft IP-access concerns tied to OpenAI’s investor relationship. Within days, Google executed a “reverse acquihire” — a $2.4 billion licensing-and-hiring deal that pulled out Windsurf’s CEO, a co-founder, and its research leadership, while explicitly <em>not</em> acquiring the company, leaving roughly 250 of Windsurf’s ~350 employees with no payout and recent hires with nothing. Two days later, Cognition (maker of the AI coding agent Devin) signed a definitive agreement — reportedly negotiated in under 72 hours from first contact — to acquire Windsurf’s remaining IP, product, and team, at the time carrying about $82 million in annualized recurring revenue across 350+ enterprise customers, and structured the deal so all remaining employees participated financially. In the space of roughly a week, the same underlying asset — a genuinely valuable AI coding product with real revenue — was priced at $3 billion, then effectively split and re-priced through two separate transactions with very different terms for the people who built it. That is not a company being “wrong” about its worth; it is a demonstration that when the acquirer’s own strategic AI position (whose model powers whose IDE, who controls the developer relationship) is itself in flux, the valuation of the target moves with it, almost independent of the target’s own metrics.</p>
+<h3 id="the-premium-is-now-conditional-not-categorical">The premium is now conditional, not categorical</h3>
+<p>M&amp;A data through 2025–2026 shows the market has started pricing this distinction explicitly rather than rewarding “has AI” broadly. Analysis of SaaS M&amp;A activity found that while 83% of buyers report paying some AI premium, 63% of 2025 acquisition targets had only “limited” AI use against buyer expectations that 61% of 2026 deal flow would be AI-driven — a roughly 35-point gap between what’s being bought and what’s being sought. The premium tends to go specifically to companies where AI is architectural (central to the product and go-to-market, built on proprietary data rather than a thin layer over a third-party model API, demonstrably improving gross/net revenue retention, and hard to replicate within an 18-month window by a well-funded entrant) rather than companies where AI is a bolted-on feature such as a chatbot or a scoring model — the latter stay in a “limited AI use” tier and, per this analysis, can actually see valuation <em>compression</em> from AI-claim skepticism during diligence rather than a premium. Oliver Wyman’s resilience framework points the same direction from the product side: systems of record with deep workflow ownership, vertical SaaS with proprietary datasets, and platforms that control execution (not just the interface) hold up; thin UX layers, standalone point solutions, and pure seat-priced tools are the most exposed. This maps onto the well-documented “AI wrapper” problem in venture: a product that is mostly a prompt and a UI around a foundation-model API has close to zero defensibility, because the foundation model provider can absorb the workflow directly, and a competitor can rebuild the wrapper in a fraction of the original build time.</p>
+<h3 id="the-intangible-asset-accounting-angle">The intangible-asset accounting angle</h3>
+<p>This has a quieter parallel inside the balance sheet itself. Capitalized software development costs and acquired software IP are carried as intangible assets under standard accounting frameworks, typically amortized over an assumed useful life on the premise that the underlying technology and its competitive position are durable for that period. When AI can functionally replicate a feature set in months rather than the multi-year cycle those useful-life assumptions were set against, the gap between a software asset’s book value and its real economic value widens — which is precisely the dynamic behind impairment write-downs like Medallia’s, and a reason boards and CFOs are increasingly being pushed toward “AI as IP” frameworks that try to value AI-specific capability (proprietary training data, fine-tuned models, workflow integration depth) as a distinct, more clearly defensible intangible asset class, separate from the general software base whose useful life just got a lot less certain.</p>
+<h2 class="part-head" id="part-iii-building-products-without-breaking-the-bank"><span class="part-numeral">III</span><span class="part-title">Building products without breaking the bank</span></h2>
+<h3 id="the-gross-margin-the-saas-model-was-built-on-is-not-automatic-anymore">The gross margin the SaaS model was built on is not automatic anymore</h3>
+<p>Traditional SaaS is a marginal-cost-near-zero business: once software is built, serving one more customer costs almost nothing, which is what supports 75–90% gross margins and, in turn, the 5–10x-plus revenue multiples the whole industry got used to. AI features break that assumption because inference is a real, per-use marginal cost. Industry benchmarking puts typical gross margins for AI-native applications and AI-heavy features around the low 50s percent — a roughly 30-plus point gap versus the 80%+ traditional-SaaS baseline — driven by compute (GPU time), the token cost of every model call, and the fact that heavier usage (the thing SaaS pricing usually wants to encourage) now directly increases cost of goods sold rather than being free upside. Because valuation multiples are, in practice, gross-margin-adjusted, this is not a back-office finance detail: a product whose AI features quietly move blended gross margin from 82% to 65% is a product whose achievable revenue multiple just moved too, even before growth or retention change at all.</p>
+<h3 id="where-the-ai-specific-cost-actually-goes">Where the AI-specific cost actually goes</h3>
+<p>The FinOps Foundation’s 2026 guidance on AI/token-cost governance is a useful map of where this money leaks, because the leakage points are largely avoidable with deliberate architecture rather than inherent to using AI at all. The largest identified lever is <strong>model right-sizing</strong> — using a smaller, cheaper model for tasks that don’t need frontier reasoning, reserving the expensive model for the subset of calls that do — with reported savings of 60–90% versus defaulting every call to the top-tier model. <strong>Prompt caching</strong> (reusing a stable system prompt or context server-side instead of re-sending it every call) can cut 50–90% off the cost of the cached portion. <strong>Batch processing</strong> for non-real-time workloads carries roughly a 50% discount versus synchronous API calls. And because output tokens typically cost three to five times more than input tokens, context and response-length management (retrieving only relevant documents, summarizing history) has an outsized effect on the bill. The Foundation’s broader point is procedural: organizations that route developer-purchased, unmetered API keys directly into production without a proxy/attribution layer (tools like LiteLLM, Portkey, or Helicone) lose the ability to even see which feature, customer, or workflow is generating the spend — cost governance has to exist before cost optimization is possible.</p>
+<h3 id="the-ai-coding-tools-themselves-are-not-free-and-the-sticker-price-understates-it">The AI coding tools themselves are not free, and the sticker price understates it</h3>
+<p>There’s a second, more immediate cost line for any engineering organization: paying for the AI coding tools rather than building AI features with AI. Headline per-seat pricing (roughly $10–$39/month for GitHub Copilot tiers, around $40/month for Cursor Business, $100–$200/month for Claude Code’s higher tiers) undersells the real number. Current analysis of AI coding assistant total cost of ownership puts the realistic <strong>all-in cost per engineer at $200–$600/month</strong> once token overages from agentic workflows, premium model upgrades developers apply manually, CI compute for agent-triggered workflows, and enterprise governance/infrastructure spend ($50K–$250K annually at the org level) are included — and billing-model transitions can produce shocks with little warning: one documented case saw an individual developer’s monthly bill jump from $29 to $750 after a provider moved from flat-fee to token-metered billing. Set against DX’s median finding of a roughly 7.76% PR throughput gain, the arithmetic an engineering leader actually has to run is not “is AI worth it” in the abstract, but a real cost-per-percentage-point-of-throughput calculation, tool by tool, team by team — and per the DORA findings above, that ROI is highly conditional on whether the team already has the engineering foundations (testing, fast feedback, clean architecture) to convert extra output into extra value rather than extra churn.</p>
+<h3 id="what-cheap-to-build-looks-like-when-it-actually-works">What “cheap to build” looks like when it actually works</h3>
+<p>The other side of this ledger is real: a small number of AI-native companies are demonstrating that products can be built and scaled with startlingly little headcount when the organization is architected around AI from the start rather than retrofitting AI onto an existing human-throughput-shaped org. Cursor was reported at roughly $2 billion in annualized revenue with about 300 employees (implying roughly $6.7 million of revenue per employee) around its November 2025 funding round that valued the company at $29.3 billion; Gamma reached $100 million ARR with about 50 employees (~$2 million per employee); Lovable reportedly reached $100 million ARR within eight months with 45 people (~$2.2 million per employee). Against a traditional SaaS median revenue-per-employee figure around $130,000 — itself down from roughly $300,000 at top performers five years ago — the gap is not incremental, it’s structural, and the commentary around these examples argues the difference is architectural rather than tool-level: these companies designed workflows (support, content, even parts of engineering) around AI as the default operator, not as an add-on, which is exactly the kind of foundational redesign the DORA report’s “amplifier” finding says is the precondition for AI turning into real throughput rather than noise.</p>
+<h3 id="where-the-money-actually-goes-to-waste">Where the money actually goes to waste</h3>
+<p>The counterweight to those success stories is a widely reported July 2025 <strong>MIT</strong> analysis of enterprise generative-AI adoption, which found that despite an estimated $30–40 billion in enterprise AI investment, roughly <strong>95% of GenAI pilots delivered no measurable financial return</strong>. The report’s diagnosis is not that the technology doesn’t work; it’s what researchers termed the “GenAI Divide” — over 80% of organizations have experimented with tools like ChatGPT or Copilot, but most of that activity boosts individual productivity in ways that never aggregate into a measured enterprise outcome. Four structural patterns recur in the failures: AI budget skewing toward sales/marketing use cases even though back-office functions (finance, operations, procurement) show better realized ROI; large enterprises running more pilots than anyone else while actually deploying less; and, notably, internally built AI tools succeeding at roughly half the rate of vendor-built, workflow-integrated ones — a real data point for the build-vs-buy decision that “how to build products without breaking the bank” ultimately turns on. The organizations in the successful 5% reported concrete savings of $2–10 million annually, concentrated in narrow, well-integrated back-office deployments rather than broad, ambitious transformation programs — a useful corrective to the instinct to fund a big, splashy AI initiative rather than several small, measured ones with a clear before/after baseline.</p>
+<h2 class="part-head" id="part-iv-second-order-effects-that-shape-all-of-the-above"><span class="part-numeral">IV</span><span class="part-title">Second-order effects that shape all of the above</span></h2>
+<h3 id="the-junior-developer-pipeline-is-visibly-contracting">The junior-developer pipeline is visibly contracting</h3>
+<p>Because AI copilots and autopilots most directly substitute for the kind of bounded, well-specified tasks junior engineers traditionally cut their teeth on, the labor-market data shows a consistent and now fairly long-running contraction specifically at the entry level rather than across software employment broadly. Stanford’s Digital Economy Lab, using ADP payroll data, found employment among 22–25-year-olds in AI-exposed occupations down 4.3% year over year as of June 2026, continuing a decline that started in October 2023 — a 33-month streak. Indeed’s Hiring Lab has reported entry-level tech postings down roughly 25% year over year, against overall tech postings down 36% from February 2020 levels; SignalFire’s 2026 State of Talent report put entry-level hiring down roughly 65% at large tech companies and 76% at early-stage startups versus 2019 baselines. This matters economically beyond the human cost: it is the pipeline that produces the senior engineers a DORA-style “harmonious high achiever” team needs in five to ten years, and several of the sources above note it as a slow-building risk to organizational health metrics that won’t show up in this quarter’s dashboard.</p>
+<h3 id="technical-debt-is-a-deferred-cost-that-current-accounting-doesnt-price">Technical debt is a deferred cost that current accounting doesn’t price</h3>
+<p>The GitClear data on rising code duplication and falling refactoring rates translates directly into a cost that is real but genuinely hard to attach a dollar figure to today — current industry commentary on “AI technical debt” is explicit that these costs are “invisible by default”: they show up later as slower feature velocity, higher defect-escape rates, and larger security surface area, but almost none of the available research quantifies them in dollars, remediation hours, or incident-cost multipliers yet. That absence of a mature costing methodology is itself a metrics gap worth flagging: the industry has good instrumentation for the speed AI adds and comparatively poor instrumentation for the debt it defers, which is exactly the kind of one-sided measurement that produces the METR-style perception gap at an organizational rather than individual level.</p>
+<h3 id="pricing-is-bifurcating-not-collapsing">Pricing is bifurcating, not collapsing</h3>
+<p>Finally, on the revenue side: per-seat pricing for AI coding tools fell roughly 23% year over year through 2025 even as usage-based pricing adoption grew about 67%, which reads less like a simple “race to the bottom” and more like a maturing market segmenting the way cloud infrastructure did a decade earlier — individual/prosumer tiers commoditizing toward free, while usage-based and outcome-based pricing (charging specifically for completed tasks or verified results, which roughly 68% of AI-monetizing SaaS companies now blend with a subscription base) let vendors capture value from heavy, high-stakes usage instead. Venture investors reportedly are adjusting evaluation accordingly — assessing whether a given model improvement makes a company structurally stronger or merely easier for a well-funded competitor to replicate, and weighting renewal-cohort retention and workflow-embedding depth over headline usage growth, which is the pricing-side mirror of the “AI as architecture vs. AI as feature” valuation split discussed in Part II.</p>
+<h2 class="part-head" id="part-v-how-companies-need-to-change-from-a-headcount-plan-to-a-two-input-operating-model"><span class="part-numeral">V</span><span class="part-title">How companies need to change: from a headcount plan to a two-input operating model</span></h2>
+<h3 id="a-third-input-has-entered-the-production-function">A third input has entered the production function</h3>
+<p>Classical business economics ran a company on two inputs: labor and fixed capital. Software simplified even that, because once a product was built, the marginal cost of serving another customer was close to zero — the entire reason SaaS could run 75–90% gross margins for two decades. What Parts I through IV describe from different angles is a genuine third input showing up in that function: AI compute, priced per token, that behaves like neither labor nor fixed capital. It isn’t labor, because it doesn’t need managing, benefits, or retention. It isn’t fixed capital, because it doesn’t sit on the balance sheet depreciating on a schedule — it’s consumed continuously and scales instantly with usage. It behaves closer to a utility bill that happens to also perform knowledge work. That is why the gross margin data in Part III (52% for AI-heavy products against 80–90% for legacy SaaS) is not a temporary inefficiency to be engineered away; it is what happens structurally the moment a genuine variable-cost input enters a cost structure that used to be almost entirely fixed. A company that still budgets as though cost is “headcount, planned annually” will keep being surprised by a bill that moves with usage in real time, the way a cloud infrastructure bill does — which is exactly why the FinOps-style governance described in Part III stops being a nice-to-have and becomes as basic as payroll.</p>
+<h3 id="capacity-becomes-a-substitution-problem-not-a-hiring-plan">Capacity becomes a substitution problem, not a hiring plan</h3>
+<p>The old capacity lever was slow and lumpy: headcount was sticky in both directions, which is why hiring freezes and layoffs are such blunt instruments and why the 33-month contraction in entry-level hiring documented in Part IV shows up as a step change rather than a smooth curve. AI capacity is the opposite — near-instantly elastic, but with a ceiling that isn’t about volume, it’s about judgment. It is cheap and fast on bounded, well-specified tasks, and it gets expensive fast, in verification cost and rework, on ambiguous ones; the roughly 30% of practitioners who still report low trust in AI output (Part I) is one visible symptom of where that ceiling sits today. The real capacity-planning question a company now faces isn’t “how many people do we need,” it’s: for this category of work, what is the right mix of a slow-but-deep input and a fast-but-shallow one, given that the two substitute for each other only up to a point. That is a genuine substitution problem, the kind classical economics models with an isoquant, and most companies do not yet have anyone whose job is explicitly to own that curve. Instead the decision gets made ad hoc, tool by tool, team by team — which is a large part of why the MIT data in Part III shows 95% of enterprise pilots producing no measured return: the substitution problem was never actually solved, AI was simply added as a layer on top of a headcount plan that was never re-derived to account for it.</p>
+<h3 id="redesigning-roles-around-comparative-advantage">Redesigning roles around comparative advantage</h3>
+<p>The right response is not “automate what AI can do and keep humans doing the rest” — it’s sorting work by where the <em>gap</em> between an AI-adequate outcome and a human-excellent outcome is largest, and protecting human time for exactly that gap. Leadership, judgment under ambiguity, taste, and the trust a client places in a specific person are areas where the delta between a mediocre and an excellent human is enormous, and AI cannot yet close it. Execution of well-specified, bounded work is where that delta is smallest, which is precisely where AI earns its keep. This is comparative-advantage economics applied to an organization chart rather than a national economy, and it produces a genuinely new role category rather than a faster version of an old one: someone whose job is to direct, verify, and correct AI output at volume is doing something qualitatively different from what a junior associate used to do. That skill — fast, accurate judgment about when confident-sounding AI output is wrong — does not yet have an established hiring pipeline, a standard interview, or an obvious compensation band in most organizations, which means most companies are currently pricing and developing exactly the wrong thing for this role: treating it like a faster junior job rather than a distinct discipline. It is also the organizational precondition behind DORA’s “amplifier” finding from Part I — the reason strong teams get faster with AI while weak ones get less stable is that the strong teams already have people who can tell good AI output from confidently wrong AI output, and the weak ones don’t.</p>
+<h3 id="the-apprenticeship-pipeline-was-never-free-it-just-used-to-be-invisible">The apprenticeship pipeline was never free — it just used to be invisible</h3>
+<p>The traditional career ladder was also, quietly, a training system: junior staff built judgment by doing a high volume of supervised execution work, and the organization got that training essentially for free as a byproduct of billable or shippable output. Collapse the base of that ladder — which is exactly what the entry-level hiring data in Part IV shows happening — and the training system disappears with it, but the need for judgment does not. Somebody still has to become the person who can catch confidently wrong AI output before it ships, and if a company is not deliberately building a new path to that skill, it is running down a stock of human capital that used to replenish itself automatically. That is not a side effect of the new structure; it is the structure’s central maintenance cost, and because it is a cost paid in years rather than quarters, it does not show up on a P&amp;L until it is already a shortage.</p>
+<h3 id="four-things-this-changes-about-how-a-company-looks-at-itself">Four things this changes about how a company looks at itself</h3>
+<p><strong>Budgeting</strong> moves from an annual headcount exercise to a continuously monitored blend of one sticky input and one liquid one — closer to how a manufacturer plans labor alongside a commodity input cost than how a software company used to plan a fixed R&amp;D budget.</p>
+<p><strong>Capacity planning</strong> becomes an explicit substitution decision instead of an implicit one hidden inside tool procurement, with someone accountable for the mix rather than every team making the call independently.</p>
+<p><strong>Talent strategy</strong> has to fund a deliberate replacement for the apprenticeship pipeline the old structure provided for free, or knowingly accept a senior-talent shortage as a deferred, multi-year bill.</p>
+<p><strong>Strategic self-assessment</strong> shifts from “how much can we scale headcount” to “how much leverage can we generate per person who holds real judgment” — which is exactly why revenue per employee, discussed in Part III as an efficiency curiosity (Cursor’s roughly $6.7 million versus a traditional SaaS median near $130,000), is better read as a company’s real strategic scorecard under this model, not a vanity efficiency stat.</p>
+<h3 id="durable-advantage-now-has-to-come-from-organization-not-access">Durable advantage now has to come from organization, not access</h3>
+<p>One thing is worth sitting with across all four of the above: because the AI half of this equation is available to competitors on roughly the same terms — the same models, at close to the same token prices — it cannot by itself be a source of durable advantage. Two companies with identical AI spend can end up with completely different economics depending on whether they treated the arrival of a third input as “buy the tools and bolt them onto the existing org chart” or as a genuine reason to re-derive how work, budget, and roles are structured. The moat argument from Part II and the operating-model argument here are, in the end, the same claim seen from two directions: the market is repricing companies that treat AI as a feature, and rewarding the ones that treat it as a redesign.</p>
+<h2 class="plain-head" id="bringing-it-together-a-working-checklist-for-a-healthy-ai-era-software-business">Bringing it together: a working checklist for a healthy AI-era software business</h2>
+<p>None of the five parts above stand alone; they are one system. A team that adopts DORA’s seven capabilities and pairs velocity metrics with quality counterweights is the same team that is more likely to convert AI spend into the kind of workflow-embedded, retention-improving product that clears the bar for an “AI as architecture” valuation premium rather than wrapper-level disposability — and the same team whose FinOps discipline on model right-sizing and caching is what keeps that product’s gross margin close enough to traditional SaaS levels to actually support that premium multiple. Conversely, an organization that only tracks throughput, buys AI tools without instrumenting their ROI, ships AI features without controlling inference cost, and treats “we use AI” as a valuation talking point rather than a demonstrated retention or margin effect is structurally exposed on all three fronts at once — which is the pattern behind both the MIT pilot-failure data and the sharper end of the 2025–2026 valuation repricing. Underneath all three is the operating-model shift from Part V: none of the good outcomes above happen by adding AI on top of an unchanged headcount plan, org chart, and budgeting calendar — they happen because a company re-derived its capacity mix, redesigned roles around where human judgment actually adds the most value, and treated the resulting apprenticeship gap as a cost to fund rather than a savings to bank. The organizations coming through this period intact appear to be the ones treating AI economics as a discipline with its own metrics, its own cost governance, and its own honest accounting for what’s durable versus rented — rather than as a multiplier to apply to the old playbook.</p>
+<hr/>
+<h2 class="sources-head" id="sources">Sources</h2>
+<ul class="sources-list">
+<li><a href="https://cloud.google.com/blog/products/ai-machine-learning/announcing-the-2025-dora-report">Announcing the 2025 DORA Report — Google Cloud Blog</a></li>
+<li><a href="https://www.faros.ai/blog/key-takeaways-from-the-dora-report-2025">DORA Report 2025 Key Takeaways: AI Impact on Dev Metrics — Faros AI</a></li>
+<li><a href="https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/">Measuring the Impact of Early-2025 AI on Experienced Open-Source Developer Productivity — METR</a></li>
+<li><a href="https://www.gitclear.com/ai_assistant_code_quality_2025_research">AI Copilot Code Quality: 2025 Data Suggests 4x Growth in Code Clones — GitClear</a></li>
+<li><a href="https://www.faros.ai/blog/measuring-engineering-productivity-2026">Measuring engineering productivity in 2026 — Faros AI</a></li>
+<li><a href="https://getdx.com/blog/ai-coding-assistant-pricing/">AI coding assistant pricing and ROI guide (2026) — getDX</a></li>
+<li><a href="https://www.oliverwyman.com/our-expertise/insights/2026/apr/how-agentic-ai-reshaping-saas-valuations.html">How agentic AI is reshaping SaaS valuations — Oliver Wyman</a></li>
+<li><a href="https://developmentcorporate.com/corporate-development/saas-ma-2026-ai-valuation-gap/">The AI Valuation Gap: SaaS M&amp;A Buyers Are Paying AI Premiums Most Founders Won’t Qualify For — Development Corporate</a></li>
+<li><a href="https://ibinterviewquestions.com/blog/saas-valuation-reset-ai-disruption-pe-writedowns">SaaS Valuation Reset: AI Disruption and PE Writedowns</a></li>
+<li><a href="https://techcrunch.com/2025/07/14/cognition-maker-of-the-ai-coding-agent-devin-acquires-windsurf/">Cognition, maker of the AI coding agent Devin, acquires Windsurf — TechCrunch</a></li>
+<li><a href="https://www.cnbc.com/2025/11/13/cursor-ai-startup-funding-round-valuation.html">AI startup Cursor raises $2.3 billion funding round at $29.3 billion valuation — CNBC</a></li>
+<li><a href="https://nicktalwar.substack.com/p/4m-revenue-per-employee-is-the-new">$4M Revenue Per Employee Is the New Benchmark — Nick Talwar</a></li>
+<li><a href="https://www.finops.org/wg/token-economics-saas/">Tokenomics: Managing AI Value in SaaS Model Token Costs — FinOps Foundation</a></li>
+<li><a href="https://www.crv.com/content/ai-business-model">AI Business Model: How AI-Native Companies Make Money — CRV</a></li>
+<li><a href="https://blog.vibecoder.me/ai-coding-tool-pricing-trends-race-to-bottom">AI Coding Tool Pricing Trends: Race to the Bottom 2026 — Vibe Coder Blog</a></li>
+<li><a href="https://www.legal.io/blog/5719519/MIT-Report-Finds-95-of-AI-Pilots-Fail-to-Deliver-ROI-Exposing-GenAI-Divide">MIT Report Finds 95% of AI Pilots Fail to Deliver ROI, Exposing the “GenAI Divide” — Legal.io</a></li>
+<li><a href="https://www.tembo.io/blog/ai-technical-debt">AI Technical Debt: The Hidden Costs of AI-Generated Code — Tembo</a></li>
+<li><a href="https://www.forbes.com/sites/josipamajic/2026/08/09/coding-jobs-vanish-for-juniors-as-ai-reshapes-career-path/">Coding Jobs Vanish For Juniors As AI Reshapes Career Path — Forbes</a></li>
+</ul>
+<p class="sourcing-note"><em>Note on sourcing: several links above are industry-analysis and aggregator sites synthesizing primary research (MIT’s GenAI study, Stanford Digital Economy Lab’s ADP analysis, BVP Cloud Index); where a primary source was directly reachable (DORA, METR, GitClear) it is cited directly. Figures dated 2026 reflect market conditions as reported at the time of this research and should be treated as a snapshot of a fast-moving market rather than a fixed baseline.</em></p>
+  </article>
+
+  <footer class="colophon">
+    <span>Companion piece to the AI Impact Compass</span>
+    <span>Snapshot as of August 2026 &mdash; a fast-moving market, not a fixed baseline</span>
+  </footer>
+</div>
+
+</body>
+</html>
