@@ -1,8 +1,277 @@
+<!doctype html>
+<html lang="en">
 <head>
-  Collections of articles
-</head>
-</br>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Connexions — Collections of articles</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22%3E%3Ctext y=%22.9em%22 font-size=%2290%22%3E%E2%9C%A6%3C/text%3E%3C/svg%3E">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;1,400;1,500&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+  <style>
+    :root {
+      --paper: #120F18;
+      --paper-raised: #1C1628;
+      --ink: #F6F1EA;
+      --ink-soft: #C9BFD8;
+      --ink-faint: #8E839F;
+      --line: #342A46;
+      --line-strong: #4A3D63;
+      --accent: #E8C37A;
+      --accent-2: #C9A6F2;
+      --shadow: 0 1px 2px rgba(0,0,0,0.45), 0 18px 40px rgba(0,0,0,0.35);
+      --font-display: "Newsreader", Georgia, "Times New Roman", serif;
+      --font-body: "Work Sans", -apple-system, "Segoe UI", sans-serif;
+      --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+    }
 
-<a href=./temp/AI-Impact-Compass_10.html>Impact Compass</a>
-</br>
-<a href=./temp/Economics-of-AI-Era-Software.html>Economics of AI Era Software Development</a>
+    * { box-sizing: border-box; }
+    html { -webkit-text-size-adjust: 100%; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background:
+        radial-gradient(ellipse 80% 50% at 10% -10%, rgba(201, 166, 242, 0.16), transparent 55%),
+        radial-gradient(ellipse 60% 40% at 100% 0%, rgba(232, 195, 122, 0.1), transparent 50%),
+        var(--paper);
+      color: var(--ink);
+      font-family: var(--font-body);
+      font-size: 16px;
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    a { color: var(--accent); text-decoration-color: var(--line-strong); text-underline-offset: 3px; }
+    a:hover { text-decoration-color: var(--accent); }
+    a:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+      border-radius: 2px;
+    }
+
+    .page {
+      max-width: 1040px;
+      margin: 0 auto;
+      padding: clamp(28px, 5vw, 64px) clamp(18px, 4vw, 40px) 72px;
+    }
+
+    .site-bar {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+      margin-bottom: clamp(40px, 8vw, 72px);
+      padding-bottom: 18px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .wordmark {
+      font-family: var(--font-display);
+      font-size: clamp(22px, 3vw, 28px);
+      font-weight: 500;
+      font-style: italic;
+      color: var(--ink);
+      text-decoration: none;
+      letter-spacing: -0.02em;
+    }
+    .wordmark:hover { color: var(--accent); text-decoration: none; }
+
+    .site-meta {
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+    }
+
+    .hero {
+      margin-bottom: clamp(40px, 7vw, 64px);
+      max-width: 38rem;
+    }
+
+    .eyebrow {
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 0.09em;
+      text-transform: uppercase;
+      color: var(--accent);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+    .eyebrow::before {
+      content: "";
+      width: 26px;
+      height: 1px;
+      background: var(--accent);
+      display: inline-block;
+    }
+
+    h1 {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: clamp(36px, 6vw, 62px);
+      line-height: 1.08;
+      letter-spacing: -0.02em;
+      margin: 0 0 18px;
+      text-wrap: balance;
+    }
+    h1 em {
+      font-style: italic;
+      color: var(--accent-2);
+    }
+
+    .dek {
+      margin: 0;
+      font-size: clamp(16px, 1.9vw, 18.5px);
+      color: var(--ink-soft);
+      max-width: 48ch;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: baseline;
+      justify-content: space-between;
+      gap: 16px;
+      margin: 0 0 22px;
+      border-bottom: 1px solid var(--line);
+      padding-bottom: 14px;
+    }
+    .section-head h2 {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: clamp(22px, 2.6vw, 27px);
+      margin: 0;
+    }
+    .section-head .tag {
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+      color: var(--ink-faint);
+      white-space: nowrap;
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 18px;
+    }
+
+    .card {
+      display: flex;
+      flex-direction: column;
+      min-height: 280px;
+      padding: 28px 26px 24px;
+      background: var(--paper-raised);
+      border: 1px solid var(--line);
+      border-radius: 4px;
+      box-shadow: var(--shadow);
+      color: inherit;
+      text-decoration: none;
+      transition: border-color 0.18s ease, transform 0.18s ease;
+    }
+    .card:hover {
+      border-color: var(--line-strong);
+      transform: translateY(-2px);
+      text-decoration: none;
+    }
+
+    .card-num {
+      font-family: var(--font-mono);
+      font-size: 11.5px;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 18px;
+    }
+
+    .card h3 {
+      font-family: var(--font-display);
+      font-weight: 500;
+      font-size: clamp(22px, 2.4vw, 28px);
+      line-height: 1.18;
+      letter-spacing: -0.015em;
+      margin: 0 0 12px;
+      text-wrap: balance;
+    }
+
+    .card p {
+      margin: 0;
+      color: var(--ink-soft);
+      font-size: 15px;
+      flex: 1;
+    }
+
+    .card-cta {
+      margin-top: 28px;
+      font-family: var(--font-mono);
+      font-size: 12px;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent-2);
+    }
+
+    .card:hover .card-cta { color: var(--accent); }
+
+    footer {
+      margin-top: clamp(48px, 8vw, 80px);
+      padding-top: 18px;
+      border-top: 1px solid var(--line);
+      font-family: var(--font-mono);
+      font-size: 12px;
+      color: var(--ink-faint);
+      letter-spacing: 0.04em;
+    }
+
+    @media (max-width: 760px) {
+      .grid { grid-template-columns: 1fr; }
+      .site-bar { flex-direction: column; gap: 8px; }
+      .card { min-height: 0; }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      .card { transition: none; }
+      .card:hover { transform: none; }
+    }
+  </style>
+</head>
+<body>
+  <div class="page">
+    <header class="site-bar">
+      <a class="wordmark" href="./index.html">Connexions</a>
+      <span class="site-meta">Collections of articles</span>
+    </header>
+
+    <section class="hero">
+      <div class="eyebrow">A reading room for software in the AI era</div>
+      <h1>Notes on what is <em>changing</em> &mdash; and what it costs.</h1>
+      <p class="dek">Essays and frameworks on delivery, valuation, and the shape of software businesses as generative AI rewrites the numbers.</p>
+    </section>
+
+    <div class="section-head">
+      <h2>From the shelf</h2>
+      <span class="tag">Two pieces</span>
+    </div>
+
+    <div class="grid">
+      <a class="card" href="./connexions/AI-Impact-Compass_10.html">
+        <span class="card-num">01 &middot; Framework</span>
+        <h3>AI Impact Compass</h3>
+        <p>What’s rising, what’s falling — and which of it is good. A discussion framework for product makers, IP owners, and service providers.</p>
+        <span class="card-cta">Read the compass →</span>
+      </a>
+      <a class="card" href="./connexions/Economics-of-AI-Era-Software.html">
+        <span class="card-num">02 &middot; Research brief</span>
+        <h3>The Economics of AI-Era Software Development</h3>
+        <p>Metrics, valuation volatility, and cost discipline in a market being rewritten in real time.</p>
+        <span class="card-cta">Read the brief →</span>
+      </a>
+    </div>
+
+    <footer>Connexions &middot; A collection of articles</footer>
+  </div>
+</body>
+</html>
