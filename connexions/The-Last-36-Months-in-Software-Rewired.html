@@ -1,0 +1,566 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>%E2%9A%99%EF%B8%8F</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;1,400;1,500&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<title>The Last 36 Months in Software, Rewired</title>
+
+<style>
+  :root {
+    --paper: #EEF0F3;
+    --paper-raised: #FFFFFF;
+    --ink: #1A2233;
+    --ink-soft: #4E5A6E;
+    --ink-faint: #8791A0;
+    --line: #D8DCE3;
+    --line-strong: #BFC5D0;
+    --accent: #3454D1;
+    --accent-strong: #22368C;
+    --accent-soft: #DDE4FA;
+    --risk: #B5502E;
+    --risk-soft: #F5E4DA;
+    --shadow: 0 1px 2px rgba(26,34,51,0.06), 0 8px 24px rgba(26,34,51,0.05);
+    --font-display: "Newsreader", Georgia, "Times New Roman", serif;
+    --font-ui: "Work Sans", -apple-system, "Segoe UI", sans-serif;
+    --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #10141C;
+      --paper-raised: #171D28;
+      --ink: #E8EAF0;
+      --ink-soft: #A8B0C0;
+      --ink-faint: #6E7688;
+      --line: #262E3D;
+      --line-strong: #38425A;
+      --accent: #6E8CFF;
+      --accent-strong: #93AAFF;
+      --accent-soft: #1C2440;
+      --risk: #E08B62;
+      --risk-soft: #2E2018;
+      --shadow: 0 1px 2px rgba(0,0,0,0.4), 0 12px 28px rgba(0,0,0,0.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #10141C;
+    --paper-raised: #171D28;
+    --ink: #E8EAF0;
+    --ink-soft: #A8B0C0;
+    --ink-faint: #6E7688;
+    --line: #262E3D;
+    --line-strong: #38425A;
+    --accent: #6E8CFF;
+    --accent-strong: #93AAFF;
+    --accent-soft: #1C2440;
+    --risk: #E08B62;
+    --risk-soft: #2E2018;
+    --shadow: 0 1px 2px rgba(0,0,0,0.4), 0 12px 28px rgba(0,0,0,0.35);
+  }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-display);
+    font-size: 18px;
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection { background: var(--accent-soft); color: var(--ink); }
+
+  a { color: var(--accent-strong); text-decoration-color: var(--line-strong); text-underline-offset: 3px; }
+  a:hover { text-decoration-color: var(--accent-strong); }
+  a:focus-visible, button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  .shell {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: clamp(28px, 5vw, 64px) clamp(18px, 4vw, 40px) 80px;
+    display: grid;
+    grid-template-columns: 210px minmax(0, 700px);
+    gap: clamp(24px, 5vw, 64px);
+    justify-content: center;
+  }
+
+  .site-bar {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: clamp(8px, 2vw, 16px);
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--line);
+  }
+  .wordmark {
+    font-family: var(--font-display);
+    font-size: clamp(22px, 3vw, 28px);
+    font-weight: 500;
+    font-style: italic;
+    color: var(--ink);
+    text-decoration: none;
+    letter-spacing: -0.02em;
+  }
+  .wordmark:hover { color: var(--accent-strong); text-decoration: none; }
+  .site-meta {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  /* ---------- Hero ---------- */
+
+  .hero {
+    grid-column: 1 / -1;
+    max-width: 700px;
+    margin: 0 auto clamp(40px, 7vw, 64px);
+    padding-bottom: clamp(28px, 5vw, 40px);
+    border-bottom: 1px solid var(--line);
+  }
+  .eyebrow {
+    font-family: var(--font-ui);
+    font-size: 12.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent-strong);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .eyebrow::before {
+    content: "";
+    width: 26px;
+    height: 1px;
+    background: var(--accent-strong);
+    display: inline-block;
+  }
+  h1.title {
+    font-weight: 500;
+    font-style: italic;
+    font-size: clamp(30px, 4.6vw, 44px);
+    line-height: 1.16;
+    letter-spacing: -0.01em;
+    margin: 0 0 16px;
+    text-wrap: balance;
+  }
+  .dek {
+    font-family: var(--font-ui);
+    font-size: clamp(15.5px, 1.7vw, 17.5px);
+    font-style: normal;
+    color: var(--ink-soft);
+    max-width: 58ch;
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  /* ---------- TOC rail ---------- */
+
+  .toc {
+    position: sticky;
+    top: clamp(20px, 4vw, 40px);
+    align-self: start;
+    font-family: var(--font-ui);
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding-top: 4px;
+  }
+  .toc-kicker {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 10px;
+  }
+  .toc a {
+    display: flex;
+    align-items: baseline;
+    gap: 9px;
+    padding: 6px 0;
+    color: var(--ink-soft);
+    text-decoration: none;
+    font-size: 13.5px;
+    line-height: 1.35;
+    border-left: 2px solid transparent;
+    padding-left: 10px;
+    margin-left: -12px;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+  .toc a:hover { color: var(--ink); border-left-color: var(--line-strong); }
+  .toc-numeral {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--accent-strong);
+    flex: none;
+    padding-top: 1px;
+  }
+  .toc a.toc-plain { padding-left: 10px; }
+  .toc a.toc-plain .toc-label { color: var(--ink-faint); font-size: 12.5px; letter-spacing: 0.02em; }
+  .toc a.toc-plain:hover .toc-label { color: var(--ink-soft); }
+
+  /* ---------- Article body ---------- */
+
+  article { min-width: 0; }
+
+  article > h2 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    margin: clamp(52px, 8vw, 76px) 0 22px;
+    padding-top: clamp(28px, 5vw, 40px);
+    border-top: 1px solid var(--line);
+  }
+  article > h2:first-child { margin-top: 0; padding-top: 0; border-top: none; }
+
+  h2.plain-head {
+    font-size: clamp(22px, 2.6vw, 27px);
+    font-style: italic;
+    line-height: 1.25;
+    text-wrap: balance;
+  }
+
+  h2.part-head {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    align-items: baseline;
+    column-gap: 18px;
+    row-gap: 2px;
+  }
+  .part-numeral {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--paper);
+    background: var(--accent-strong);
+    padding: 3px 9px 4px;
+    border-radius: 3px;
+    align-self: start;
+  }
+  .part-title {
+    font-size: clamp(22px, 2.7vw, 28px);
+    line-height: 1.22;
+    text-wrap: balance;
+  }
+
+  h2.sources-head {
+    font-size: clamp(20px, 2.4vw, 24px);
+    font-family: var(--font-ui);
+    font-style: normal;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-soft);
+  }
+
+  article h3 {
+    font-family: var(--font-ui);
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: 0.01em;
+    color: var(--accent-strong);
+    margin: 30px 0 10px;
+  }
+  article > h2 + h3 { margin-top: 4px; }
+
+  article p {
+    margin: 0 0 20px;
+    max-width: 66ch;
+  }
+
+  article strong { font-weight: 600; color: var(--ink); }
+  article em { font-style: italic; }
+
+  .sourcing-note {
+    font-style: italic;
+    color: var(--ink-faint);
+    font-size: 15px;
+    max-width: 66ch;
+    border-top: 1px solid var(--line);
+    padding-top: 20px;
+    margin-top: 36px;
+  }
+
+  /* ---------- Dial matrix diagram ---------- */
+
+  .dial-matrix {
+    margin: 8px 0 30px;
+    padding: 20px 20px 12px;
+    background: var(--paper-raised);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+  }
+  .dial-matrix svg {
+    width: 100%;
+    height: auto;
+    display: block;
+    overflow: visible;
+  }
+  .axis-title {
+    font-family: var(--font-ui);
+    font-weight: 600;
+    font-size: 13px;
+    letter-spacing: 0.03em;
+    fill: var(--ink-soft);
+  }
+  .axis-tick {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    fill: var(--ink-faint);
+  }
+  .dial-quadrant rect {
+    fill: var(--paper);
+    stroke: var(--line-strong);
+    stroke-width: 1;
+  }
+  .dial-quadrant[data-quadrant="target"] rect { fill: var(--accent-soft); stroke: var(--accent); }
+  .dial-quadrant[data-quadrant="risk"] rect { fill: var(--risk-soft); stroke: var(--risk); }
+  .quadrant-title {
+    font-family: var(--font-ui);
+    font-weight: 600;
+    font-size: 15px;
+    fill: var(--ink);
+  }
+  .quadrant-sub {
+    font-family: var(--font-ui);
+    font-size: 12px;
+    fill: var(--ink-soft);
+  }
+  .dial-matrix figcaption {
+    font-family: var(--font-ui);
+    font-size: 12.5px;
+    color: var(--ink-faint);
+    margin-top: 6px;
+    padding: 0 2px 6px;
+    font-style: italic;
+  }
+
+  /* ---------- Sources list ---------- */
+
+  ul.sources-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    counter-reset: src;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  ul.sources-list li {
+    counter-increment: src;
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    gap: 12px;
+    padding: 11px 0;
+    border-top: 1px solid var(--line);
+    font-family: var(--font-ui);
+    font-size: 14.5px;
+  }
+  ul.sources-list li:first-child { border-top: none; }
+  ul.sources-list li::before {
+    content: counter(src, decimal-leading-zero);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--ink-faint);
+    padding-top: 2px;
+  }
+  ul.sources-list li a { color: var(--ink-soft); text-decoration: none; }
+  ul.sources-list li a:hover { color: var(--accent-strong); text-decoration: underline; text-decoration-color: var(--line-strong); }
+  ul.sources-list li .src-body { display: block; }
+
+  hr { display: none; }
+
+  footer.colophon {
+    grid-column: 1 / -1;
+    max-width: 700px;
+    margin: clamp(48px, 8vw, 72px) auto 0;
+    padding-top: 22px;
+    border-top: 1px solid var(--line);
+    font-family: var(--font-ui);
+    font-size: 12.5px;
+    color: var(--ink-faint);
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 880px) {
+    .site-bar { flex-direction: column; gap: 8px; }
+    .shell { grid-template-columns: minmax(0, 1fr); }
+    .toc {
+      position: static;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 8px 14px;
+      padding: 14px 16px;
+      background: var(--paper-raised);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      margin: 0 auto clamp(32px, 7vw, 48px);
+      max-width: 700px;
+      box-shadow: var(--shadow);
+    }
+    .toc-kicker { width: 100%; margin-bottom: 2px; }
+    .toc a { padding: 3px 0; margin-left: 0; border-left: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .toc a { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+
+<div class="shell">
+  <header class="site-bar">
+    <a class="wordmark" href="../index.html">Connexions</a>
+    <span class="site-meta">Collections of articles</span>
+  </header>
+  <header class="hero">
+    <div class="eyebrow">Research brief &middot; September 2026</div>
+    <h1 class="title">The Last 36 Months in Software, Rewired</h1>
+    <p class="dek">How generative AI changed who does what in building software — and the two new failure modes that came with it</p>
+  </header>
+
+  <nav class="toc">
+    <div class="toc-kicker">In this brief</div>
+    <a href="#why-this-is-a-role-story-not-a-tools-story" class="toc-plain"><span class="toc-label">Why this is a role story, not a tools story</span></a>
+      <a href="#part-i-the-starting-line-what-actually-changed-since-late-2023"><span class="toc-numeral">I</span><span class="toc-label">The starting line: what actually changed since late 2023</span></a>
+      <a href="#part-ii-the-developers-new-job-from-writer-to-reviewer-manager"><span class="toc-numeral">II</span><span class="toc-label">The developer’s new job: from writer to reviewer-manager</span></a>
+      <a href="#part-iii-the-product-owners-new-job-precision-as-the-bottleneck"><span class="toc-numeral">III</span><span class="toc-label">The product owner’s new job: precision as the bottleneck</span></a>
+      <a href="#part-iv-when-specification-quality-doesnt-keep-up-the-output-not-focused-problem"><span class="toc-numeral">IV</span><span class="toc-label">When specification quality doesn’t keep up: the output-not-focused problem</span></a>
+      <a href="#part-v-the-human-to-agent-mix-problem"><span class="toc-numeral">V</span><span class="toc-label">The human-to-agent mix problem</span></a>
+      <a href="#part-vi-new-roles-crystallizing-out-of-the-gap"><span class="toc-numeral">VI</span><span class="toc-label">New roles crystallizing out of the gap</span></a>
+      <a href="#a-short-practical-framing" class="toc-plain"><span class="toc-label">A short practical framing</span></a>
+      <a href="#sources" class="toc-plain"><span class="toc-label">Sources</span></a>
+  </nav>
+
+  <article>
+    <h2 class="plain-head" id="why-this-is-a-role-story-not-a-tools-story">Why this is a role story, not a tools story</h2>
+<p>Most retrospectives on generative AI and software development are told as a tools story: which model writes the cleanest function, which agent can hold the longest context, which IDE plugin autocompletes fastest. That framing missed the actual news of the last three years. Between late 2023 and today, AI coding tools went from a novelty a fifth of developers were experimenting with to the default way most software gets written — Google’s DORA research put adoption at 90% in 2025, up 14 points in a single year, with developers spending a median of two hours a day working with AI. That part happened fast, and it happened roughly on schedule with what vendors promised.</p>
+<p>What nobody quite priced in was that the work left over for humans changed shape. When a model can produce a plausible pull request from a paragraph of instructions, the paragraph becomes the scarce resource. Getting it right increasingly requires the kind of business and systems understanding that used to be spread across a whole team’s worth of conversation, now compressed into whoever is doing the specifying at that moment — and the same compression is happening to the reviewing side, where “does this look right” quietly turns into “do I understand this well enough to say so.” This brief is about that compression: how it redrew the developer and product owner roles, why the well-known complaints about low-quality AI output trace back to it, and how organizations are — and are not — figuring out the right mix of human and agent in the loop.</p>
+<h2 class="part-head" id="part-i-the-starting-line-what-actually-changed-since-late-2023"><span class="part-numeral">I</span><span class="part-title">The starting line: what actually changed since late 2023</span></h2>
+<p>Three data points anchor the period. First, adoption: DORA’s 2025 State of AI-Assisted Software Development report found 90% of software professionals now use AI in their work, and Stack Overflow’s 2025 developer survey put the figure at 84%, up from roughly 70% in 2023 — meaning AI-assisted coding went from “something some teams try” to “the default” in about two years. Second, dependence: DORA found 65% of developers now describe themselves as heavily reliant on AI for development tasks, and workers overall have roughly doubled how often they use AI at work since 2023, according to the BetterUp Labs and Stanford Social Media Lab research on AI’s effect on workplace output. Third, and least reported: trust moved in the opposite direction from adoption. Stack Overflow found developer trust in AI-generated output fell to 29% in 2025, down 11 points from the year before — meaning more developers are using AI, more intensively, while trusting it less than they did twelve months earlier.</p>
+<p>That combination — rising use, falling trust — is the signature of a technology that got embedded into workflows faster than organizations figured out how to supervise it. DORA’s own framing captures the mechanism: AI acts as “a mirror and a multiplier.” Teams with strong existing practices — clear requirements, fast feedback loops, good platform engineering — see AI amplify those strengths. Teams without them see AI amplify the gaps just as efficiently, producing more output at the same (or worse) level of quality faster than before. The rest of this brief is about what happens inside both kinds of teams, and why the difference between them increasingly comes down to two things: how well people specify what they want, and how well they calibrate how much of the loop a human needs to be in.</p>
+<h2 class="part-head" id="part-ii-the-developers-new-job-from-writer-to-reviewer-manager"><span class="part-numeral">II</span><span class="part-title">The developer’s new job: from writer to reviewer-manager</span></h2>
+<p>The clearest role change is on the engineering side, and multiple independent accounts from 2025–2026 converge on the same description even though they use different names for it. Some call it “plan-and-review engineering” — the idea that engineers now spend most of their time on architecture, specification, and validation rather than typing implementation code, with AI functioning as what one account describes as “the production crew” under the engineer’s direction. Others describe developers becoming “AI managers” or orchestrators: people who define problems, provide context, assign work to one or more agents, and validate what comes back, rather than writing every line themselves.</p>
+<p>Underneath the different labels, the same five competencies keep showing up as what actually differentiates a developer who gets leverage from AI versus one who gets slowed down by it: system design (understanding how components fit together well enough to direct an agent that can’t see the whole picture), code review (catching flaws in work you didn’t personally write, which is a different and in some ways harder skill than writing it), AI orchestration (assigning the right task to the right tool with the right context), security judgment (catching unsafe permissions or vulnerable patterns an agent has no reason to flag itself), and — the one the user’s own framing correctly identifies as underrated — business understanding, because an agent can only be as good as the intent it’s given, and intent is a business fact, not a technical one.</p>
+<p>This is a genuinely new demand on developers, and it is not evenly distributed. Junior engineers, in particular, face a documented tension: the fastest way to ship with AI is to accept its output without deeply understanding it, but the way developers build the judgment needed to review AI output well is by having done the work manually often enough to recognize when something is wrong. Several 2026 commentaries frame this as an organizational responsibility problem as much as an individual one — teams that set unrealistic AI-driven velocity targets push juniors to skip the learning step that would make them capable reviewers later, compounding the review-capacity gap over time rather than closing it.</p>
+<h2 class="part-head" id="part-iii-the-product-owners-new-job-precision-as-the-bottleneck"><span class="part-numeral">III</span><span class="part-title">The product owner’s new job: precision as the bottleneck</span></h2>
+<p>If developers moved from writing to reviewing, the shift on the product side is more structural: the bottleneck in software delivery moved upstream. When implementation was the slow part, a product owner’s job was largely about sequencing — deciding what to build next and defending that order against competing demands. When an agent can generate a working implementation from a specification in minutes, sequencing stops being the constraint. Precision does. The product owner’s new job, in the words of one 2026 account of what’s being called the AI Development Life Cycle (AIDLC), is to “author executable specifications” — requirements precise enough that an agent can act on them without a clarifying conversation, because that conversation often no longer happens; the agent just proceeds on its best guess.</p>
+<p>That reframing puts three specific competencies on the product owner’s desk that were previously optional: precise writing (framing a requirement so it has exactly one correct interpretation, not the usual product-spec looseness that a human collaborator would have silently resolved through hallway conversation), metric literacy (owning success measurement end-to-end rather than handing it to QA), and what’s being called eval literacy — enough understanding of how automated evaluation works to know whether a requirement is even testable in the first place. This is the technical depth the user’s framing points to directly: a product owner who doesn’t understand how the underlying system actually behaves cannot write a specification precise enough for an agent to execute correctly, because the ambiguity that a human engineer would have quietly absorbed and resolved gets faithfully executed instead.</p>
+<p>The failure mode when this competency is missing has a specific, well-described shape: a vague specification that would once have produced a clarifying question from a human engineer now produces, in the words of one account, “a thousand lines of confidently wrong code instead of a polite request for clarification.” The cost of ambiguity didn’t disappear when AI got faster — it moved from a conversation at the start of the work to a rewrite at the end of it.</p>
+<h2 class="part-head" id="part-iv-when-specification-quality-doesnt-keep-up-the-output-not-focused-problem"><span class="part-numeral">IV</span><span class="part-title">When specification quality doesn’t keep up: the output-not-focused problem</span></h2>
+<p>This is where the user’s observation about “knowledge work that is not output focused” shows up in the data with real specificity, and it has a name now: workslop. BetterUp Labs and the Stanford Social Media Lab define it as AI-generated work that looks polished — well-formatted, confidently worded, plausible on first read — but doesn’t actually advance the task, shifting the cognitive labor of figuring that out onto whoever receives it. Their research, published in September 2025, found 41% of surveyed workers had encountered workslop in the preceding month, and that each instance cost the receiving employee an average of nearly two hours of rework, cross-referencing, or redoing the task from scratch. A separate finding from the same period reported that 95% of organizations investing in generative AI could not measure a return on that investment — a gap this research helps explain: the output volume goes up, but a meaningful share of it doesn’t clear the bar of being genuinely useful, and the hidden cost of sorting that out doesn’t show up in the metrics that made AI look productive in the first place.</p>
+<p>Code tells the same story with harder numbers. GitClear’s analysis of 623 million code changes from 2023 through 2026 found that as AI-authored code has scaled, several structural quality indicators moved in a worrying direction together: code block duplication is up 81%, within-commit copy-paste is up 41%, refactoring activity is down 70% from 2022 levels, and legacy code maintenance is down 74% since 2023. Developers are now roughly five times more likely to copy-paste than refactor, a full reversal of the 2:1 preference for refactoring GitClear observed in 2022. The pattern reads exactly like the mechanism the user described: it is faster to ask an agent to regenerate a variant than to understand and restructure the existing code, so codebases accumulate near-duplicate logic that is individually easy to produce and collectively harder to test, harder to reason about, and harder to change safely — the classic signature of output that was optimized for looking finished rather than for being correct.</p>
+<p>Even measured developer productivity carries a warning about the same gap between output and validated output. A randomized controlled trial from METR in mid-2025, using experienced open-source developers working on real repository issues, found that developers using AI tools took 19% longer to complete tasks than developers working without them — despite having expected a 24% speedup going in, and despite believing afterward that AI had made them 20% faster. The researchers’ leading explanation was not that the AI-written code was useless, but that professional-grade work requires documentation, testing, and verification that AI-assisted developers still had to do themselves, and that work is where the time actually went — it just wasn’t visible to the developers doing it, the same invisibility the workslop research documents in a different setting. Put together, these three data sets describe one underlying problem: when specification and validation don’t scale up as fast as generation does, the industry gets more output and not obviously more finished work, and the difference between the two shows up later, as somebody else’s rework.</p>
+<h2 class="part-head" id="part-v-the-human-to-agent-mix-problem"><span class="part-numeral">V</span><span class="part-title">The human-to-agent mix problem</span></h2>
+<p>The user’s second observation — that too many humans in the loop erases the agentic advantage, while too few causes validation gaps and drift — turns out to be one of the more actively studied questions in the field right now, and it has a rough shape to it that’s worth walking through explicitly.</p>
+<p>On the “too many humans” side, the clearest evidence is about coordination overhead rather than raw supervision cost. Research on AI agent “span of control” — how many agents one person can effectively run — traces the underlying math to Graicunas’s 1930s management theory: a supervisor’s real load isn’t the headcount, it’s the number of relationships between the people (or agents) being coordinated, which grows combinatorially, not linearly. In practice, most people managing agents through separate chat-style interfaces cap out around four before coordination overhead — clarifying requests, re-explaining context, chasing status — eats the time savings; a small number of highly practiced operators stretch to ten or fifteen through disciplined task specification. One venture investor quoted on the subject put it bluntly: he could “barely manage four AI agents at once.” The bottleneck in every account is the same — not what the agents can do, but how much of the human’s attention gets consumed just keeping them coordinated — which is precisely the “too many humans in the loop erodes the advantage” problem the user named, just relocated: it isn’t only that a human checkpoint slows each individual agent down, it’s that a human sitting at the center of too many parallel loops becomes the shared bottleneck for all of them at once.</p>
+<p>On the “too few humans” side, the evidence is about compounding error and unarchitected accountability. A widely cited piece of agent-reliability math makes the mechanism concrete: an agent chaining 20 tool calls at a 95% success rate per step — which sounds high — succeeds end-to-end only about 36% of the time, because the errors compound multiplicatively rather than averaging out. Commentary on why roughly 77% of autonomous agent projects never reach production converges on a related point: teams that remove humans from the loop without deliberately re-architecting where accountability lives don’t get more reliable output, they get invisible failure, because nothing catches the compounding error before it reaches a customer or a codebase. The projects that do reach production and stay there, by that same account, share a specific pattern rather than a specific autonomy level: a narrowly scoped task, human checkpoints placed deliberately on irreversible actions while reversible ones run autonomously, least-privilege tool access, a measurable evaluation harness built before scaling, and a “shadow mode” period where the agent runs alongside a human before earning autonomy on its own.</p>
+<p>That pattern points toward a framing that’s gaining traction as a replacement for “human-in-the-loop” altogether: rather than treating humans as checkpoints embedded inside a machine workflow — which is what produces both the coordination bottleneck and the false confidence that oversight is happening just because a human is nominally present — some 2026 commentary argues for humans positioned “above the loop,” setting direction, judgment, and the boundaries of acceptable autonomy, while the mechanical validation, routing, and reconciliation that used to consume human attention gets designed into the system itself. The distinction matters because it reframes the user’s calibration question: it’s not really “how many humans per agent,” it’s “which decisions specifically require a human’s judgment, and is the system actually built so a human only touches those.” A single well-placed approval gate on an irreversible action can do more than five humans loosely supervising everything.</p>
+<h2 class="part-head" id="part-vi-new-roles-crystallizing-out-of-the-gap"><span class="part-numeral">VI</span><span class="part-title">New roles crystallizing out of the gap</span></h2>
+<p>Both pressures described above — the demand for better upstream specification and the need to design deliberate human checkpoints rather than blanket oversight — are visible in the job titles that emerged over the same 36 months. “Context engineer” crystallized in industry discussion in late 2025 as a distinct role from the earlier “prompt engineer”: where prompt engineering optimized the wording of a single interaction, context engineering is described by Gartner as designing “the relevant data, workflows and environment so AI systems can understand intent, make better decisions and deliver contextual, enterprise-aligned outcomes” — in effect, the discipline of building the specification and memory infrastructure that Part III argued product owners and engineers now depend on, rather than trusting each person to improvise it per task. Compensation data for AI-engineering roles with this kind of specialization — retrieval architecture, evaluation design, context-pipeline work — runs meaningfully above generalist software engineering pay, a 30–50% premium by some estimates, which is itself a signal of how scarce the underlying skill (precise, systems-literate specification and validation) has become relative to demand.</p>
+<p>None of this fully closed the trust gap described in Part I, and that is arguably the most honest marker of where the industry actually stands 36 months in: usage climbed to 84–90% while trust fell to under 30%, which is not the profile of a solved problem — it’s the profile of a capability that got deployed faster than the organizational and individual skills needed to supervise it well.</p>
+<h2 class="plain-head" id="a-short-practical-framing">A short practical framing</h2>
+<p>Strip away the tool names and the framework acronyms, and the last three years come down to two dials that have to move together, not one lever that fixes everything on its own. The first dial is specification precision — how much business and technical understanding gets encoded into the instructions an agent receives, before it starts working, rather than corrected afterward in review. The second is autonomy calibration — not how many humans are nominally “in the loop,” but whether the specific points where human judgment is irreplaceable (irreversible actions, ambiguous intent, safety-critical logic) are the ones actually gated, while everything else is allowed to run.</p>
+<figure class="dial-matrix">
+<svg aria-label="A two-by-two matrix showing outcomes from combining low or high specification precision with low or high autonomy calibration." role="img" viewbox="0 0 700 440">
+<!-- Axis labels -->
+<text class="axis-title" text-anchor="middle" x="350" y="24">Specification precision</text>
+<text class="axis-tick" text-anchor="middle" x="60" y="15">low</text>
+<text class="axis-tick" text-anchor="middle" x="640" y="15">high</text>
+<text class="axis-title" text-anchor="middle" transform="rotate(-90)" x="-230" y="20">Autonomy calibration</text>
+<text class="axis-tick" text-anchor="middle" transform="rotate(-90)" x="-378" y="20">low</text>
+<text class="axis-tick" text-anchor="middle" transform="rotate(-90)" x="-92" y="20">high</text>
+<!-- Quadrant: low spec / high calibration -->
+<g class="dial-quadrant" data-quadrant="risk">
+<rect height="160" rx="8" width="290" x="60" y="46"></rect>
+<text class="quadrant-title" x="80" y="80">Workslop, at scale</text>
+<text class="quadrant-sub" x="80" y="104">
+<tspan dy="0" x="80">Checkpoints are well placed, but vague</tspan>
+<tspan dy="18" x="80">intent slips straight through them —</tspan>
+<tspan dy="18" x="80">confidently wrong output, unflagged.</tspan>
+</text>
+</g>
+<!-- Quadrant: high spec / high calibration (target) -->
+<g class="dial-quadrant" data-quadrant="target">
+<rect height="160" rx="8" width="270" x="370" y="46"></rect>
+<text class="quadrant-title" x="390" y="80">Sustainable velocity</text>
+<text class="quadrant-sub" x="390" y="104">
+<tspan dy="0" x="390">Precise intent going in, human</tspan>
+<tspan dy="18" x="390">judgment gated only where it's</tspan>
+<tspan dy="18" x="390">irreplaceable. The 23% that ship.</tspan>
+</text>
+</g>
+<!-- Quadrant: low spec / low calibration -->
+<g class="dial-quadrant" data-quadrant="neutral">
+<rect height="160" rx="8" width="290" x="60" y="226"></rect>
+<text class="quadrant-title" x="80" y="260">Slow, and still wrong</text>
+<text class="quadrant-sub" x="80" y="284">
+<tspan dy="0" x="80">Blanket human review on everything —</tspan>
+<tspan dy="18" x="80">expensive, and it still can't repair</tspan>
+<tspan dy="18" x="80">intent that was never made precise.</tspan>
+</text>
+</g>
+<!-- Quadrant: high spec / low calibration -->
+<g class="dial-quadrant" data-quadrant="neutral">
+<rect height="160" rx="8" width="270" x="370" y="226"></rect>
+<text class="quadrant-title" x="390" y="260">Coordination bottleneck</text>
+<text class="quadrant-sub" x="390" y="284">
+<tspan dy="0" x="390">Instructions are precise, but a human</tspan>
+<tspan dy="18" x="390">still sits in every loop — throughput</tspan>
+<tspan dy="18" x="390">caps at one person's span of control.</tspan>
+</text>
+</g>
+</svg>
+<figcaption>Both dials have to move together. Improving only one relocates the failure rather than removing it.</figcaption>
+</figure>
+<p>Move only the first dial — better specifications, same blanket oversight — and you get the coordination bottleneck: a human span of control that caps out around four to fifteen agents no matter how good the instructions are. Move only the second — more autonomy, same loose specifications — and you get workslop and compounding error at scale: confidently wrong output with no clarifying question ever asked. The organizations DORA found getting real throughput gains from AI, and the individual teams cited in the 77%-failure research that actually reach production, are the ones treating this as one calibration problem with two knobs, not two separate initiatives to run in parallel.</p>
+<hr/>
+<h2 class="sources-head" id="sources">Sources</h2>
+<ul class="sources-list">
+<li><span class="src-body"><a href="https://cloud.google.com/blog/products/ai-machine-learning/announcing-the-2025-dora-report">Announcing the 2025 DORA Report</a> — Google Cloud</span></li>
+<li><span class="src-body"><a href="https://blog.google/innovation-and-ai/technology/developers-tools/dora-report-2025/">How are developers using AI? Inside Google’s 2025 DORA report</a> — Google</span></li>
+<li><span class="src-body"><a href="https://shiftmag.dev/this-is-how-ai-changes-software-developer-roles-6845/">This is How AI Changes Software Developer Roles</a> — ShiftMag</span></li>
+<li><span class="src-body"><a href="https://www.nispaara.com/blog/ai-coding-agents-developers-ai-managers-2026/">AI Coding Agents in 2026: Are Developers Becoming AI Managers?</a> — Nispaara</span></li>
+<li><span class="src-body"><a href="https://pooyagolchian.com/blog/aidlc-product-manager-role-agentic-2026/">How the Product Manager Role Changed Under Agentic AI Development (AIDLC 2026)</a> — Pooya Golchian</span></li>
+<li><span class="src-body"><a href="https://www.kunalganglani.com/blog/plan-review-software-engineering">Plan-and-Review Software Engineering: The New Role [2026]</a> — Kunal Ganglani</span></li>
+<li><span class="src-body"><a href="https://www.productbuilder.net/learn/spec-driven-development">Spec-Driven Development (2026 Guide)</a> — Product Builder</span></li>
+<li><span class="src-body"><a href="https://hbr.org/2025/09/ai-generated-workslop-is-destroying-productivity">AI-Generated “Workslop” Is Destroying Productivity</a> — Harvard Business Review / BetterUp Labs / Stanford Social Media Lab</span></li>
+<li><span class="src-body"><a href="https://www.gitclear.com/the_ai_code_quality_maintainability_gap">The Maintainability Gap: 2026 AI Code Quality Research</a> — GitClear</span></li>
+<li><span class="src-body"><a href="https://metr.org/blog/2025-07-10-early-2025-ai-experienced-os-dev-study/">Measuring the Impact of Early-2025 AI on Experienced Open-Source Developer Productivity</a> — METR</span></li>
+<li><span class="src-body"><a href="https://diginomica.com/2026-year-move-human-in-loop-to-humans-above-loop">2026 is the year we move from ‘human-in-the-loop’ to ‘humans-above-the-loop’</a> — diginomica</span></li>
+<li><span class="src-body"><a href="https://lovex.dev/blog/agent-manager-span-of-control">Agent manager: how many AI agents can one person run?</a> — Lovex</span></li>
+<li><span class="src-body"><a href="https://umesh-malik.com/blog/autonomous-ai-agents-production-gap-2026">AI Agents That Run the Business in 2026: Why 77% Never Reach Production</a> — Umesh Malik</span></li>
+<li><span class="src-body"><a href="https://stackoverflow.blog/2026/02/18/closing-the-developer-ai-trust-gap/">Mind the gap: Closing the AI trust gap for developers</a> — Stack Overflow</span></li>
+<li><span class="src-body"><a href="https://blog.theinterviewguys.com/what-is-a-context-engineer/">What Is a Context Engineer? The AI Job Title Replacing Prompt Engineers in 2026</a> — The Interview Guys</span></li>
+</ul>
+<p><em>Figures in this brief are drawn from named industry surveys, vendor research, and independent studies published between 2025 and 2026, cited individually above. Where two sources reported different numbers for a related claim (for example, adoption rate), both are presented with their own attribution rather than reconciled into one figure — the underlying methodologies and survey populations differ, and the gap between them is itself informative about how unevenly this shift has landed across the industry.</em></p>
+  </article>
+
+  <footer class="colophon">
+    <span>Companion piece to the AI Impact Compass</span>
+    <span>Snapshot as of September 2026 &mdash; a fast-moving industry, not a fixed baseline</span>
+  </footer>
+</div>
+
+</body>
+</html>
