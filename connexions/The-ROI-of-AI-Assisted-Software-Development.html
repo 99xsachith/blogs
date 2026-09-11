@@ -1,0 +1,580 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>%F0%9F%93%88</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,wght@0,400;0,500;1,400;1,500&family=Work+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<title>The ROI of AI-Assisted Software Development</title>
+
+<style>
+  :root {
+    --paper: #EEF1EA;
+    --paper-raised: #FFFFFF;
+    --ink: #17231C;
+    --ink-soft: #47594E;
+    --ink-faint: #7C8C81;
+    --line: #D6DED2;
+    --line-strong: #BDC9B6;
+    --accent: #1F7A4C;
+    --accent-strong: #145A37;
+    --accent-soft: #DCEEE1;
+    --shadow: 0 1px 2px rgba(23,35,28,0.06), 0 8px 24px rgba(23,35,28,0.05);
+    --font-display: "Newsreader", Georgia, "Times New Roman", serif;
+    --font-ui: "Work Sans", -apple-system, "Segoe UI", sans-serif;
+    --font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", Menlo, monospace;
+  }
+
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --paper: #0E1512;
+      --paper-raised: #16201B;
+      --ink: #E8EFE9;
+      --ink-soft: #A9BBB0;
+      --ink-faint: #71857A;
+      --line: #23302A;
+      --line-strong: #34453B;
+      --accent: #4ECB8D;
+      --accent-strong: #7EDCAA;
+      --accent-soft: #163524;
+      --shadow: 0 1px 2px rgba(0,0,0,0.4), 0 12px 28px rgba(0,0,0,0.35);
+    }
+  }
+  :root[data-theme="dark"] {
+    --paper: #0E1512;
+    --paper-raised: #16201B;
+    --ink: #E8EFE9;
+    --ink-soft: #A9BBB0;
+    --ink-faint: #71857A;
+    --line: #23302A;
+    --line-strong: #34453B;
+    --accent: #4ECB8D;
+    --accent-strong: #7EDCAA;
+    --accent-soft: #163524;
+    --shadow: 0 1px 2px rgba(0,0,0,0.4), 0 12px 28px rgba(0,0,0,0.35);
+  }
+
+  * { box-sizing: border-box; }
+  html { -webkit-text-size-adjust: 100%; }
+
+  body {
+    margin: 0;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--font-display);
+    font-size: 18px;
+    line-height: 1.62;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  ::selection { background: var(--accent-soft); color: var(--ink); }
+
+  a { color: var(--accent-strong); text-decoration-color: var(--line-strong); text-underline-offset: 3px; }
+  a:hover { text-decoration-color: var(--accent-strong); }
+  a:focus-visible, button:focus-visible {
+    outline: 2px solid var(--accent);
+    outline-offset: 3px;
+    border-radius: 2px;
+  }
+
+  .shell {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: clamp(28px, 5vw, 64px) clamp(18px, 4vw, 40px) 80px;
+    display: grid;
+    grid-template-columns: 210px minmax(0, 700px);
+    gap: clamp(24px, 5vw, 64px);
+    justify-content: center;
+  }
+
+  .site-bar {
+    grid-column: 1 / -1;
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 16px;
+    margin-bottom: clamp(8px, 2vw, 16px);
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--line);
+  }
+  .wordmark {
+    font-family: var(--font-display);
+    font-size: clamp(22px, 3vw, 28px);
+    font-weight: 500;
+    font-style: italic;
+    color: var(--ink);
+    text-decoration: none;
+    letter-spacing: -0.02em;
+  }
+  .wordmark:hover { color: var(--accent-strong); text-decoration: none; }
+  .site-meta {
+    font-family: var(--font-mono);
+    font-size: 11.5px;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+  }
+
+  /* ---------- Hero ---------- */
+
+  .hero {
+    grid-column: 1 / -1;
+    max-width: 700px;
+    margin: 0 auto clamp(40px, 7vw, 64px);
+    padding-bottom: clamp(28px, 5vw, 40px);
+    border-bottom: 1px solid var(--line);
+  }
+  .eyebrow {
+    font-family: var(--font-ui);
+    font-size: 12.5px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--accent-strong);
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+  }
+  .eyebrow::before {
+    content: "";
+    width: 26px;
+    height: 1px;
+    background: var(--accent-strong);
+    display: inline-block;
+  }
+  h1.title {
+    font-weight: 500;
+    font-style: italic;
+    font-size: clamp(30px, 4.6vw, 44px);
+    line-height: 1.16;
+    letter-spacing: -0.01em;
+    margin: 0 0 16px;
+    text-wrap: balance;
+  }
+  .dek {
+    font-family: var(--font-ui);
+    font-size: clamp(15.5px, 1.7vw, 17.5px);
+    font-style: normal;
+    color: var(--ink-soft);
+    max-width: 58ch;
+    margin: 0;
+    line-height: 1.5;
+  }
+
+  /* ---------- TOC rail ---------- */
+
+  .toc {
+    position: sticky;
+    top: clamp(20px, 4vw, 40px);
+    align-self: start;
+    font-family: var(--font-ui);
+    display: flex;
+    flex-direction: column;
+    gap: 3px;
+    padding-top: 4px;
+  }
+  .toc-kicker {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--ink-faint);
+    margin-bottom: 10px;
+  }
+  .toc a {
+    display: flex;
+    align-items: baseline;
+    gap: 9px;
+    padding: 6px 0;
+    color: var(--ink-soft);
+    text-decoration: none;
+    font-size: 13.5px;
+    line-height: 1.35;
+    border-left: 2px solid transparent;
+    padding-left: 10px;
+    margin-left: -12px;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+  .toc a:hover { color: var(--ink); border-left-color: var(--line-strong); }
+  .toc a.toc-plain { padding-left: 10px; }
+  .toc a.toc-plain .toc-label { color: var(--ink-faint); font-size: 12.5px; letter-spacing: 0.02em; }
+  .toc a.toc-plain:hover .toc-label { color: var(--ink-soft); }
+
+  /* ---------- Article body ---------- */
+
+  article { min-width: 0; }
+
+  article > h2 {
+    font-family: var(--font-display);
+    font-weight: 500;
+    margin: clamp(52px, 8vw, 76px) 0 22px;
+    padding-top: clamp(28px, 5vw, 40px);
+    border-top: 1px solid var(--line);
+  }
+  article > h2:first-child { margin-top: 0; padding-top: 0; border-top: none; }
+
+  h2.plain-head {
+    font-size: clamp(22px, 2.6vw, 27px);
+    font-style: italic;
+    line-height: 1.25;
+    text-wrap: balance;
+  }
+
+  h2.sources-head {
+    font-size: clamp(20px, 2.4vw, 24px);
+    font-family: var(--font-ui);
+    font-style: normal;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-soft);
+  }
+
+  article h3 {
+    font-family: var(--font-ui);
+    font-weight: 600;
+    font-size: 15px;
+    letter-spacing: 0.01em;
+    color: var(--accent-strong);
+    margin: 30px 0 10px;
+  }
+  article > h2 + h3 { margin-top: 4px; }
+
+  article p {
+    margin: 0 0 20px;
+    max-width: 66ch;
+  }
+
+  article strong { font-weight: 600; color: var(--ink); }
+  article em { font-style: italic; }
+
+  .sourcing-note {
+    font-style: italic;
+    color: var(--ink-faint);
+    font-size: 15px;
+    max-width: 66ch;
+    border-top: 1px solid var(--line);
+    padding-top: 20px;
+    margin-top: 36px;
+  }
+
+  /* ---------- J-Curve diagram ---------- */
+
+  .jcurve-diagram {
+    margin: 8px 0 30px;
+    padding: 20px 20px 12px;
+    background: var(--paper-raised);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    box-shadow: var(--shadow);
+  }
+  .jcurve-diagram svg {
+    width: 100%;
+    height: auto;
+    display: block;
+    overflow: visible;
+  }
+  .axis-line { stroke: var(--line-strong); stroke-width: 1; }
+  .baseline-line { stroke: var(--line-strong); stroke-width: 1; stroke-dasharray: 4 4; }
+  .axis-title {
+    font-family: var(--font-ui);
+    font-weight: 600;
+    font-size: 12.5px;
+    letter-spacing: 0.03em;
+    fill: var(--ink-soft);
+  }
+  .axis-tick {
+    font-family: var(--font-mono);
+    font-size: 10.5px;
+    fill: var(--ink-faint);
+  }
+  .jcurve-path {
+    fill: none;
+    stroke: var(--accent);
+    stroke-width: 2.5;
+    stroke-linecap: round;
+  }
+  .jcurve-point { fill: var(--accent-strong); }
+  .jcurve-point-end { fill: var(--accent); }
+  .leader-line { stroke: var(--line-strong); stroke-width: 1; stroke-dasharray: 2 3; }
+  .dip-label {
+    font-family: var(--font-ui);
+    font-size: 11.5px;
+    fill: var(--ink-soft);
+  }
+  .growth-label {
+    font-family: var(--font-ui);
+    font-weight: 600;
+    font-size: 12.5px;
+    fill: var(--accent-strong);
+  }
+  .jcurve-diagram figcaption {
+    font-family: var(--font-ui);
+    font-size: 12.5px;
+    color: var(--ink-faint);
+    margin-top: 6px;
+    padding: 0 2px 6px;
+    font-style: italic;
+  }
+
+  /* ---------- Stat tiles ---------- */
+
+  .stat-row {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    gap: 12px;
+    margin: 8px 0 30px;
+  }
+  .stat-tile {
+    background: var(--paper-raised);
+    border: 1px solid var(--line);
+    border-radius: 10px;
+    padding: 16px 16px 14px;
+    box-shadow: var(--shadow);
+  }
+  .stat-tile-accent {
+    background: var(--accent-soft);
+    border-color: var(--accent);
+  }
+  .stat-value {
+    font-family: var(--font-display);
+    font-weight: 500;
+    font-size: clamp(24px, 3vw, 30px);
+    line-height: 1.1;
+    color: var(--ink);
+    font-variant-numeric: tabular-nums;
+  }
+  .stat-tile-accent .stat-value { color: var(--accent-strong); }
+  .stat-label {
+    font-family: var(--font-ui);
+    font-weight: 600;
+    font-size: 12.5px;
+    color: var(--ink-soft);
+    margin-top: 6px;
+  }
+  .stat-sub {
+    font-family: var(--font-ui);
+    font-size: 11.5px;
+    color: var(--ink-faint);
+    margin-top: 4px;
+    line-height: 1.4;
+  }
+
+  /* ---------- Sources list ---------- */
+
+  ul.sources-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    counter-reset: src;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+  }
+  ul.sources-list li {
+    counter-increment: src;
+    display: grid;
+    grid-template-columns: 28px 1fr;
+    gap: 12px;
+    padding: 11px 0;
+    border-top: 1px solid var(--line);
+    font-family: var(--font-ui);
+    font-size: 14.5px;
+  }
+  ul.sources-list li:first-child { border-top: none; }
+  ul.sources-list li::before {
+    content: counter(src, decimal-leading-zero);
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--ink-faint);
+    padding-top: 2px;
+  }
+  ul.sources-list li a { color: var(--ink-soft); text-decoration: none; }
+  ul.sources-list li a:hover { color: var(--accent-strong); text-decoration: underline; text-decoration-color: var(--line-strong); }
+  ul.sources-list li .src-body { display: block; }
+
+  hr { display: none; }
+
+  footer.colophon {
+    grid-column: 1 / -1;
+    max-width: 700px;
+    margin: clamp(48px, 8vw, 72px) auto 0;
+    padding-top: 22px;
+    border-top: 1px solid var(--line);
+    font-family: var(--font-ui);
+    font-size: 12.5px;
+    color: var(--ink-faint);
+    display: flex;
+    justify-content: space-between;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  @media (max-width: 880px) {
+    .site-bar { flex-direction: column; gap: 8px; }
+    .shell { grid-template-columns: minmax(0, 1fr); }
+    .toc {
+      position: static;
+      flex-direction: row;
+      flex-wrap: wrap;
+      gap: 8px 14px;
+      padding: 14px 16px;
+      background: var(--paper-raised);
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      margin: 0 auto clamp(32px, 7vw, 48px);
+      max-width: 700px;
+      box-shadow: var(--shadow);
+    }
+    .toc-kicker { width: 100%; margin-bottom: 2px; }
+    .toc a { padding: 3px 0; margin-left: 0; border-left: none; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .toc a { transition: none; }
+  }
+</style>
+</head>
+<body>
+
+
+<div class="shell">
+  <header class="site-bar">
+    <a class="wordmark" href="../index.html">Connexions</a>
+    <span class="site-meta">Collections of articles</span>
+  </header>
+  <header class="hero">
+    <div class="eyebrow">Summary brief &middot; September 2026</div>
+    <h1 class="title">The ROI of AI-Assisted Software Development</h1>
+    <p class="dek">A summary of DORA's 2026 report — and how it builds on the 2025 findings</p>
+  </header>
+
+  <nav class="toc">
+    <div class="toc-kicker">In this summary</div>
+    <a href="#what-this-report-actually-is" class="toc-plain"><span class="toc-label">What this report actually is</span></a>
+      <a href="#the-j-curve-the-reports-central-new-idea" class="toc-plain"><span class="toc-label">The J-Curve: the report’s central new idea</span></a>
+      <a href="#a-market-that-hasnt-made-up-its-mind" class="toc-plain"><span class="toc-label">A market that hasn’t made up its mind</span></a>
+      <a href="#the-value-framework-five-pillars-one-flow" class="toc-plain"><span class="toc-label">The value framework: five pillars, one flow</span></a>
+      <a href="#putting-a-number-on-it-the-worked-example" class="toc-plain"><span class="toc-label">Putting a number on it: the worked example</span></a>
+      <a href="#the-five-systemic-keys-to-actually-capturing-the-return" class="toc-plain"><span class="toc-label">The five systemic keys to actually capturing the return</span></a>
+      <a href="#whats-genuinely-new-versus-whats-restated" class="toc-plain"><span class="toc-label">What’s genuinely new, versus what’s restated</span></a>
+      <a href="#the-practical-takeaway" class="toc-plain"><span class="toc-label">The practical takeaway</span></a>
+      <a href="#sources" class="toc-plain"><span class="toc-label">Sources</span></a>
+  </nav>
+
+  <article>
+    <h2 class="plain-head" id="what-this-report-actually-is">What this report actually is</h2>
+<p>In early 2026, Google Cloud’s DORA team, working jointly with Google Cloud’s delta consulting practice, published <em>The ROI of AI-Assisted Software Development</em>. It is easy to mistake this for a new edition of DORA’s well-known annual survey, <em>State of AI-Assisted Software Development</em> — but it isn’t one. No new practitioner survey sits behind it, and none of the headline 2025 figures (90% adoption, developers spending a median of two hours a day with AI, and so on) are updated here. Instead, this is a financial companion piece: DORA’s attempt to take everything the 2025 survey found and turn it into a model a CFO would accept. Where the 2025 report answered “what is AI doing to software delivery,” this one answers “how do I put a dollar figure on that for my board.”</p>
+<p>The report opens by restating its inherited thesis plainly: AI is an amplifier. It magnifies the strengths of high-performing organizations and the dysfunctions of struggling ones, and the greatest returns come not from the tools themselves but from the underlying organizational system — the quality of the internal platform, the clarity of workflows, the alignment of teams. Without that foundation, AI creates what the report calls “localized pockets of productivity that are often lost in downstream chaos.” Everything that follows is an attempt to price that dynamic.</p>
+<h2 class="plain-head" id="the-j-curve-the-reports-central-new-idea">The J-Curve: the report’s central new idea</h2>
+<p>The most consequential addition in this report — the concept doing most of the argumentative work — is the J-Curve of AI value realization. It is a simple, deliberately named shape: value realized dips below the starting baseline before eventually rising past it into exponential growth, tracing the letter J. DORA frames this dip as “the tuition cost of transformation,” not a signal that adoption failed.</p>
+<figure class="jcurve-diagram">
+  <svg viewBox="0 0 700 400" role="img" aria-label="A J-shaped curve showing value realized dipping below the starting baseline during early AI adoption, driven by the learning curve, the verification tax, and pipeline adaptation, before rising past baseline into eventual exponential growth.">
+    <!-- Axes -->
+    <line x1="60" y1="40" x2="60" y2="320" class="axis-line"/>
+    <line x1="60" y1="320" x2="660" y2="320" class="axis-line"/>
+    <text x="30" y="50" class="axis-title" transform="rotate(-90 30 50)" text-anchor="end">Value realized</text>
+    <text x="660" y="345" class="axis-title" text-anchor="end">Time</text>
+    <text x="60" y="345" class="axis-tick">Time zero</text>
+
+    <!-- Starting baseline -->
+    <line x1="60" y1="200" x2="660" y2="200" class="baseline-line"/>
+    <text x="64" y="193" class="axis-tick">Starting baseline</text>
+
+    <!-- The J-curve -->
+    <path d="M 60,200 C 150,232 210,278 262,282 C 322,286 386,238 428,200 C 492,144 570,84 650,52" class="jcurve-path"/>
+
+    <!-- Trough marker -->
+    <circle cx="262" cy="282" r="4" class="jcurve-point"/>
+    <!-- Endpoint marker -->
+    <circle cx="650" cy="52" r="4" class="jcurve-point jcurve-point-end"/>
+
+    <!-- Dip cause callouts -->
+    <line x1="150" y1="232" x2="150" y2="336" class="leader-line"/>
+    <text x="150" y="352" text-anchor="middle" class="dip-label">The learning curve</text>
+
+    <line x1="262" y1="282" x2="262" y2="336" class="leader-line"/>
+    <text x="262" y="352" text-anchor="middle" class="dip-label">The verification tax</text>
+
+    <line x1="370" y1="256" x2="370" y2="336" class="leader-line"/>
+    <text x="370" y="352" text-anchor="middle" class="dip-label">Pipeline adaptation</text>
+
+    <!-- Growth label -->
+    <text x="644" y="42" text-anchor="end" class="growth-label">Eventual exponential growth</text>
+  </svg>
+  <figcaption>The J-Curve of AI value realization, redrawn from DORA's Figure 1/2 — the dip is the tuition cost of transformation, not a signal of failure.</figcaption>
+</figure>
+
+<p>Three systemic factors drive the trough:</p>
+<p><strong>The learning curve.</strong> Teams spend time away from feature delivery learning new interfaces and mastering prompting and context-setting, rather than the older, simpler act of writing code directly.</p>
+<p><strong>The verification tax.</strong> Developers spend real time reviewing AI-generated output because of well-founded concerns about hallucination and trustworthiness — and the sheer volume of code AI produces expands the total review burden needed to meet security and architectural standards.</p>
+<p><strong>Pipeline adaptation.</strong> As individual developers generate code faster, downstream processes — testing, change approval — have to scale to absorb the new volume, which exposes legacy constraints that used to go unnoticed.</p>
+<p>The report’s guidance to leaders is explicit: budget for this dip in advance. Organizations that don’t often mistake the J-Curve’s trough for failure and pull funding during exactly the phase that was supposed to happen. The size and duration of the dip aren’t fixed — they scale with an organization’s existing technical maturity and the health of its internal developer platform — but the shape itself, the report argues, is close to universal.</p>
+<h2 class="plain-head" id="a-market-that-hasnt-made-up-its-mind">A market that hasn’t made up its mind</h2>
+<p>Before turning to methodology, the report pauses to describe just how divided the wider market is on whether AI investment is paying off — synthesizing three external studies rather than relying on DORA’s own data alone:</p>
+<p>The <strong>positive case</strong> comes from Google Cloud’s own 2025 ROI research: 78% of executives report realizing a return on investment from at least one generative AI use case, and 88% of early adopters using agentic AI already report positive returns.</p>
+<p>The <strong>neutral case</strong> comes from the Stanford AI Index: workforce productivity expectations remain highly mixed across corporate functions, and while adoption is high, actual structural transformation is rare — producing flat productivity gains for many organizations that deployed AI without changing anything else.</p>
+<p>The <strong>pessimistic case</strong> comes from MIT’s NANDA project research on what it calls the “GenAI Divide”: internal corporate AI builds frequently fail outright, pushing employees toward an unauthorized “shadow AI” economy of consumer tools that deliver individual productivity gains but no systemic value and real security exposure.</p>
+<p>DORA’s read of this divide lands exactly where its own thesis predicts: the primary barrier to successful adoption is organizational design, not budget or the technology itself.</p>
+<h2 class="plain-head" id="the-value-framework-five-pillars-one-flow">The value framework: five pillars, one flow</h2>
+<p>To make the financial case measurable, the report lays out a value framework running from the most directly quantifiable benefit to the least. <strong>Cost efficiency</strong> (reduced development and infrastructure spend) sits at one end because it’s the easiest to measure. <strong>Productivity</strong> and <strong>developer experience</strong> sit in the middle — productivity gains free capacity for reinvestment, and improved developer experience reduces the costly churn of losing and replacing engineers. <strong>User experience</strong> and <strong>business growth</strong> sit at the far end, because the causal chain to revenue is real but harder to isolate: AI investment shapes developer output, which shapes product quality, which shapes user retention, which eventually shapes growth. The report is candid that the further right you move along that chain, the harder the value becomes to attribute cleanly — but it declines to restrict “value” to only the hardest, most defensible cost savings, treating the fuller model as a door-opener for the conversation rather than a rigid formula.</p>
+<p>Underneath this sits a value model that flows in one direction: AI adoption is underpinned by capabilities (the seven-capability DORA AI Capabilities Model carried over from 2025), which improve DORA’s core delivery metrics, which manifest first as non-financial value — higher productivity, better developer experience, better user experience — before finally showing up as the lagging financial indicators of cost savings and revenue.</p>
+<h2 class="plain-head" id="putting-a-number-on-it-the-worked-example">Putting a number on it: the worked example</h2>
+<p>The report’s most concrete contribution is a full worked ROI calculation for a hypothetical 500-person engineering organization, built from its accompanying interactive calculator.</p>
+<p>On the cost side: licensing, additional AI usage costs, and training for 500 staff, plus infrastructure, total <strong>$5.07M</strong> in direct hard costs. Layered on top is the J-Curve cost itself — a modeled 15% productivity drop across the organization for three months — adding <strong>$3.3M</strong>. Total first-year investment: <strong>$8.4M</strong>.</p>
+<p>On the value side: time saved by developers, reinvested as avoided hiring rather than headcount reduction, is estimated at <strong>$11M</strong> in headcount reinvestment capacity. Faster feature delivery adds roughly <strong>$990K</strong> in projected new revenue. Increased delivery instability — the report’s “instability tax” — actually <em>subtracts</em> value here, costing an estimated <strong>$344K</strong> from additional downtime, because the model assumes change failure rate rises alongside deployment frequency during adoption. Total first-year value: <strong>$11.6M</strong>.</p>
+<p>Net of the two: a first-year ROI of <strong>39%</strong>, and a payback period of <strong>0.7 years — about eight months</strong>. DORA is careful to flag this as a high-uncertainty illustration meant to spark a conversation, not a number to import wholesale into any specific organization’s budget — and it notes separately that AI’s productivity lift on simple, greenfield coding tasks (35–40%, per Stanford’s Software Engineering Productivity Research) is dramatically larger than its lift on complex, legacy brownfield code (10% or less), which is exactly the kind of assumption the calculator expects a reader to adjust for their own portfolio.</p>
+<div class="stat-row">
+  <div class="stat-tile">
+    <div class="stat-value">$8.4M</div>
+    <div class="stat-label">First-year investment</div>
+    <div class="stat-sub">$5.07M hard costs + $3.3M J-Curve cost</div>
+  </div>
+  <div class="stat-tile">
+    <div class="stat-value">$11.6M</div>
+    <div class="stat-label">First-year value</div>
+    <div class="stat-sub">Headcount capacity + new revenue + downtime effect</div>
+  </div>
+  <div class="stat-tile stat-tile-accent">
+    <div class="stat-value">39%</div>
+    <div class="stat-label">First-year ROI</div>
+    <div class="stat-sub">For the report's 500-FTE worked example</div>
+  </div>
+  <div class="stat-tile">
+    <div class="stat-value">~8 mo</div>
+    <div class="stat-label">Payback period</div>
+    <div class="stat-sub">0.7 years to recover the investment</div>
+  </div>
+</div>
+
+<h2 class="plain-head" id="the-five-systemic-keys-to-actually-capturing-the-return">The five systemic keys to actually capturing the return</h2>
+<p>The report closes its practical guidance with five organizational prerequisites it says separate teams that convert AI spend into real ROI from teams whose gains evaporate into downstream chaos: building trust in AI output as a foundational capability (so developers stop second-guessing every line, which is what deepens the J-Curve in the first place); treating the internal developer platform as a product in its own right, since it is now both the risk mitigator and the context provider for AI agents, not just an infrastructure portal; cultivating AI-accessible internal data — clean APIs, high-fidelity documentation — because agents are only as good as the ground truth they can reach; anchoring AI-driven velocity in actual user value rather than raw commit or pull-request volume; and deploying automated, non-optional verification guardrails so that increased throughput produces quality, not just more incidents.</p>
+<p>It maps these onto an investment sequence: capital first goes to the “context layer” (CapEx — the platform and data ecosystem), then to “empowering the human in the loop” (OpEx — training developers to act as high-level orchestrators who provide precise context and verify output rather than write code line by line). Progress is tracked through leading indicators before any lagging financial ones — specifically <strong>experiment frequency</strong> (how often teams use agents to explore new solutions) and deployment frequency, balanced against a stability gauge of change failure rate and rework, so that leaders can confirm the engineering system is absorbing AI successfully long before revenue numbers would show it either way.</p>
+<p>One idea here is worth pulling out on its own: the report reframes experiment frequency as a genuinely financial concept, borrowing real-options theory. Because AI drastically lowers the cost of building a prototype or variation, every experiment becomes a cheap option rather than an expensive bet — and a team that runs more of these cheap experiments builds a portfolio of low-cost options, only committing the expensive, long-term resources of scaling and securing an idea once it has actually proven its value in production. In that framing, a high experiment frequency is itself a leading financial indicator, not just an engineering-culture nicety.</p>
+<h2 class="plain-head" id="whats-genuinely-new-versus-whats-restated">What’s genuinely new, versus what’s restated</h2>
+<p>Stripped of framing, the report is honest about which parts of its argument are new and which are the 2025 findings translated into a different register. The core empirical claims — AI as amplifier, the tie between platform quality and AI’s effect, the pairing of increased productivity with increased instability, the seven DORA AI capabilities — are all imported from 2025 without revision. What’s new is entirely the financial and narrative layer built on top: the J-Curve as a named model, the ROI calculator and its worked numbers, the three-way market-divide synthesis pulling in Stanford and MIT research alongside DORA’s own, and a firmer shift in vocabulary from “AI-assisted coding” toward “the agentic era” — the report’s own language for autonomous systems executing multi-step work, where it argues ROI should be measured not by how much code an agent writes, but by how much latent human creativity gets freed by clearing systemic toil.</p>
+<h2 class="plain-head" id="the-practical-takeaway">The practical takeaway</h2>
+<p>The report’s advice converges on a single, consistent instruction, restated in nearly every chapter: don’t fund the tool, fund the system that will let the tool compound. Budget explicitly for a temporary productivity dip rather than treating it as a warning sign. Measure leading indicators — experiment frequency, deployment frequency, change failure rate — before expecting to see the lagging ones. And resist the instinct to convert freed developer capacity into headcount reduction; the report’s own modeling treats retained, reinvested capacity as the larger and more durable source of return.</p>
+<hr/>
+<h2 class="sources-head" id="sources">Sources</h2>
+<ul class="sources-list">
+<li><span class="src-body"><a href="https://dora.dev/ai/roi/">DORA: The ROI of AI-Assisted Software Development (2026, v.2026.1)</a> — Google Cloud DORA team and Google Cloud delta</span></li>
+<li><span class="src-body"><a href="https://dora.dev/ai/roi/calculator">DORA ROI of AI-assisted Software Development calculator</a></span></li>
+<li><span class="src-body"><a href="https://dora.dev/dora-report-2025/">DORA: 2025 State of AI-Assisted Software Development</a></span></li>
+<li><span class="src-body"><a href="https://dora.dev/dora-aicmr">DORA AI Capabilities Model (2025)</a></span></li>
+<li><span class="src-body"><a href="https://www.infoq.com/news/2026/05/dora-roi-ai-assisted-dev-report/">New DORA Report Claims Strong Engineering Foundations Drive AI ROI — InfoQ</a></span></li>
+<li><span class="src-body"><a href="https://hai.stanford.edu/ai-index/2025-ai-index-report">The Stanford AI Index Report 2025</a> — Stanford Institute for Human-Centered Artificial Intelligence</span></li>
+<li><span class="src-body"><a href="https://cloud.google.com/resources/content/roi-of-ai-2025">Google Cloud: The ROI of AI 2025</a></span></li>
+<li><span class="src-body"><a href="https://mlq.ai/media/quarterly_decks/v0.1_State_of_AI_in_Business_2025_Report.pdf">MIT NANDA / MLQ.ai: The GenAI Divide — State of AI in Business 2025</a></span></li>
+</ul>
+<p class="sourcing-note"><em>This summary is based on a full read of the primary report (60 pages, v.2026.1, citations retrieved by DORA in February 2026) and cross-checked against independent trade-press coverage. Figures quoted from the report’s worked example are illustrative, as DORA itself repeatedly emphasizes — they describe one hypothetical 500-person organization’s assumptions, not a benchmark to be applied directly elsewhere.</em></p>
+  </article>
+
+  <footer class="colophon">
+    <span>Companion summary to DORA's 2026 ROI report</span>
+    <span>Snapshot as of September 2026 &mdash; check dora.dev for newer versions</span>
+  </footer>
+</div>
+
+</body>
+</html>
